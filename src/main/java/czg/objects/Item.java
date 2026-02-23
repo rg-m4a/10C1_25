@@ -8,27 +8,13 @@ import czg.scenes.BaseScene;
 
 import java.awt.*;
 
-/**
- * Klasse für Items. Jedes Item sollte als <b>eine</b> {@code public static final}-Instanz
- * (Singleton) in dieser Klasse angelegt werden.
- */
-public class Item extends BaseObject{
+public class Item{
+    String[][] itemliste = {{"Test0", "1"},
+                            {"Test1", "2"},
+                            {"Test2", "3"}};
 
-    public final int level;
-    public final String name;
-    public final int ID;
+    public Item(String[][] itemliste) {
+        this.itemliste = itemliste;
+    }
 
-    private Item(Image sprite, int x, int y, int level, String name, int ID) {
-        super(sprite, x, y);
-        
-        this.level = level;
-        this.name = name;
-        this.ID = ID;
-    }
-    
-    @Override
-    public void update(BaseScene scene) {
-       
-    }
-    
 }

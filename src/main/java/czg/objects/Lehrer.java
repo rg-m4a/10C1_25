@@ -18,6 +18,7 @@ public class Lehrer extends BaseObject{
 
     @Override
     public void update(BaseScene scene) {
-
+        // Ääähhhhhhh... Was macht das?
+        // Lehrer brauchen keine Updates...
     }
 }
