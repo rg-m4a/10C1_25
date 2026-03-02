@@ -18,14 +18,14 @@ public class Kampfplayer extends BaseObject{
 
     @Override
     public void update(BaseScene scene) {
-        // Updates sind für Loooooser
-        // Oder ich weiß einfach nicht wofür das ist...
     }
 
     public void angriff() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Gib mal ID");
         int ausgewaehlt = Integer.parseInt(scanner.nextLine());
+        int level = Integer.parseInt(Item.testitemliste[ausgewaehlt][1]);
+        Lehrer.verteidigung(level);
     }
 
 
