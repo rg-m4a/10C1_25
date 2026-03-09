@@ -8,18 +8,23 @@ import czg.objects.BackdropObject;
 import czg.objects.ButtonObject;
 import czg.util.Images;
 
+import static czg.MainWindow.HEIGHT;
 import static czg.MainWindow.WIDTH;
 
-public class InforaumScene extends BaseScene{
-    public InforaumScene(){
+/**
+ *
+ * @author guest-rwl69f
+ */
+public class ChemieraumScene extends BaseScene{
+    public ChemieraumScene(){
         //Einfügen des Hintergrunds
-        objects.add(new BackdropObject(Images.get("/assets/background/Info-Raum.png")));
-
+        objects.add(new BackdropObject(Images.get("/assets/background/Chemieraum.png")));
+        
 
         ButtonObject unten = new ButtonObject(
                 Images.get("/assets/background/PfeilUnten.png"),
                 () -> {
-                    InfogangScene hausm = new InfogangScene();
+                    ChemiegangScene hausm = new ChemiegangScene();
                     /*
                     this.objects.remove(ExamplePlayerObject.INSTANCE);
                     tr1.objects.add(ExamplePlayerObject.INSTANCE);
@@ -30,6 +35,6 @@ public class InforaumScene extends BaseScene{
         unten.x = (WIDTH/2) - (unten.width/2);
         unten.y = 440;
         objects.add(unten);
-
-    }
+        
+        }
 }
