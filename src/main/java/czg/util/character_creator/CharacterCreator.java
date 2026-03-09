@@ -79,6 +79,7 @@ public final class CharacterCreator extends JFrame {
         saveLoadPanel.setLayout(new GridLayout(1, 3));
         saveLoadPanel.add(load);
         saveLoadPanel.add(save);
+        saveLoadPanel.add(reset);
 
         return saveLoadPanel;
     }
