@@ -48,9 +48,9 @@ public class MinigameScene extends BaseScene {
         switch(department) {
             case COMPUTER_SCIENCE -> {
                 return new MinigameScene(
-                    new InformaticsLevelScene(0),
-                    new InformaticsLevelScene(1),
-                    new InformaticsLevelScene(2)
+                    new ComputerScienceLevelScene(0),
+                    new ComputerScienceLevelScene(1),
+                    new ComputerScienceLevelScene(2)
                 );
             } case MATHEMATICS -> {
                 return new MinigameScene(

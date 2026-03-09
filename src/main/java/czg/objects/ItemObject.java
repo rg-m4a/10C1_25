@@ -48,7 +48,7 @@ public enum ItemObject{
     public final Image sprite;
     public final int level;
     
-    private ItemObject(String name, String imagePath, int level) {
+    ItemObject(String name, String imagePath, int level) {
         this.name = name;
         this.sprite = Images.get(imagePath);
         this.level = level;

@@ -3,14 +3,14 @@ package czg.scenes.minigame_scenes;
 import czg.MainWindow;
 import czg.objects.BaseObject;
 import czg.objects.ButtonObject;
-import czg.objects.minigame_objects.InfoPuzzleObject;
+import czg.objects.minigame_objects.ComputerSciencePuzzleObject;
 import czg.objects.DepartmentObject;
 
-public class InformaticsLevelScene extends LevelScene {
-    public InformaticsLevelScene(int level) {
+public class ComputerScienceLevelScene extends LevelScene {
+    public ComputerScienceLevelScene(int level) {
         super(DepartmentObject.COMPUTER_SCIENCE, level);
 
-        InfoPuzzleObject puzzle = InfoPuzzleObject.getPuzzle(level);
+        ComputerSciencePuzzleObject puzzle = ComputerSciencePuzzleObject.getPuzzle(level);
 
         int availableHeight = (int) (MainWindow.HEIGHT * 0.7);
         int gateHeight = availableHeight / puzzle.answers.length;
