@@ -17,24 +17,24 @@ public class ExampleItemObject {
         https://www.w3schools.com/java/java_enums.asp
         https://www.w3schools.com/java/java_enum_constructor.asp
 
-    static String[][] testItemListe = {{"DNA", 1, DNA.png}
+    static String[][] testItemListe = {{"DNA", 1, dna.png}
                                        {"Mikroskop", 2, Mikroskop.png}
-                                       {"Nervenzelle", 3, Nerv.png}
-                                       {"Schädel", 1, Schädel.png}
-                                       {"Sezierter Frosch", 2, Seizured_Frog.png}
-                                       {"Virus", 3, Virus.png}
-                                       {"Atommodell", 1, Atom.png}
-                                       {"Bunsenbrenner", 2, Brenner.png}
-                                       {"Wunderkerze", 3, Wunderkerze.png}
-                                       {"Säure", 1, Säure.png}
-                                       {"Schutzbrille", 2, Schutzbrille.png}
-                                       {"Spritzflasche", 3, Spritzflasche.png}
-                                       {"Error-Screen", 1, BSOD.png}
-                                       {"Lautsprecher", 2, Lautsprecher.png}
-                                       {"WLAN", 3, WLAN.png}
-                                       {"CD", 1, CD.png}
-                                       {"Chrome", 2, Chrome.png}
-                                       {"Tastatur", 3, Tastatur.png}
+                                       {"Nervenzelle", 3, nerv.png}
+                                       {"Schädel", 1, schädel.png}
+                                       {"Sezierter Frosch", 2, seizured_frog.png}
+                                       {"Virus", 3, virus.png}
+                                       {"Atommodell", 1, atom.png}
+                                       {"Bunsenbrenner", 2, brenner.png}
+                                       {"Wunderkerze", 3, wunderkerze.png}
+                                       {"Säure", 1, säure.png}
+                                       {"Schutzbrille", 2, schutzbrille.png}
+                                       {"Spritzflasche", 3, spritzflasche.png}
+                                       {"Error-Screen", 1, blue_screen_of_death.png}
+                                       {"Lautsprecher", 2, lautsprecher.png}
+                                       {"WLAN", 3, wlan.png}
+                                       {"CD", 1, cd.png}
+                                       {"Chrome", 2, chrome.png}
+                                       {"Tastatur", 3, tastatur.png}
                                        {}
         }
 
