@@ -14,6 +14,11 @@ public final class Draw {
     public static final Font FONT_TITLE = new Font("Arial", Font.BOLD, 32);
 
     /**
+     * Völlig durchsichtige Farbe
+     */
+    public static final Color TRANSPARENCY = new Color(0,0,0,0);
+
+    /**
      * Zeichnet Text, sodass dessen Mittelpunkt bei den angegebenen Koordinaten liegt. Farbe und Schrift
      * sollten vorher schon eingestellt sein.
      * @param g Graphics-Objekt. Sollte durch den entsprechenden Parameter einer draw()-Methode bereitgestellt werden.

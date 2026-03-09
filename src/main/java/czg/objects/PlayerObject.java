@@ -3,31 +3,125 @@ package czg.objects;
 import czg.scenes.BaseScene;
 import czg.scenes.InventarScene;
 import czg.scenes.SceneStack;
+import czg.util.Capsule;
+import czg.util.Draw;
 import czg.util.Images;
+import czg.util.character_creator.SaveFile;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import static czg.MainWindow.PIXEL_SCALE;
 
 /**
- *
- * @author guest-0wphjm
+ * Die Spielfigur
  */
 public class PlayerObject extends BaseObject{
 
     //Anlegen einer Reihung "Inventar", in welchem die Items, auf die der Spieler zugreifen kann, gespeichert werden
-    public List<ItemObject> inventar;
+    public List<ItemObject> inventar = new ArrayList<>();
 
-    public static PlayerObject INSTANCE = new PlayerObject(Images.get("/assets/characters/PlayerBase.png"), 0, 0, new ArrayList<>());
+    // Standardfarben
+    public static final SaveFile defaultColors = new SaveFile(
+            new Color(57, 37, 35),  // Haare: Braun
+            new Color(45, 96, 145), // Haut: Blau
+            new Color(97, 105, 112),// Hoodie: Grau
+            new Color(241, 241, 44) // Hose: Gelb
+    );
 
-    public PlayerObject(Image sprite, int x, int y, ArrayList<ItemObject> inventar){
-        super (sprite, x, y);
-        this.inventar = inventar;
+    /**
+     * Farbe der Haare
+     */
+    public Capsule<Color> haare = new Capsule<>(defaultColors.haare());
+    /**
+     * Farbe des Hoodies
+     */
+    public Capsule<Color> hoodie = new Capsule<>(defaultColors.hoodie());
+    /**
+     * Farbe der Hose
+     */
+    public Capsule<Color> hose = new Capsule<>(defaultColors.hose());
+    /**
+     * Farbe der Haut
+     */
+    public Capsule<Color> haut = new Capsule<>(defaultColors.haut());
+
+    /**
+     * Zuordnung [Farbe im Original-Sprite] → [Speicherort der Farbe, durch die sie ersetzt werden soll]
+     */
+    private static final Map<Integer, Function<PlayerObject,Capsule<Color>>> spriteColorMap = new HashMap<>();
+    static {
+        spriteColorMap.put(0xFF75FB4C, p->p.haare);
+        spriteColorMap.put(0xFFEA33F7, p->p.hoodie);
+        spriteColorMap.put(0xFF0000F5, p->p.hose);
+        spriteColorMap.put(0xFFEA3323, p->p.haut);
     }
 
-    //Sobald der Spieler angeklickt wird, wird das Inventar geöffnet
+    /**
+     * Singleton-Instanz
+     */
+    public static PlayerObject INSTANCE = new PlayerObject();
+
+    /**
+     * Privater Konstruktor, der nur für {@link #INSTANCE} verwendet wird
+     */
+    private PlayerObject() {
+        // Vorläufig ohne Bild initialisieren
+        super(null);
+
+        // Vorlage laden und Größe bestimmen
+        Image baseSprite = Images.get("/assets/characters/PlayerBase.png");
+        width = baseSprite.getWidth(null) * PIXEL_SCALE;
+        height = baseSprite.getHeight(null) * PIXEL_SCALE;
+
+        // Tatsächlichen Sprite als zunächst leeres Bild erstellen
+        sprite = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        // Farben anwenden
+        updateSprite();
+    }
+
+    /**
+     * Farben {@link #haare}, {@link #haut}, {@link #hoodie} und {@link #hose} anwenden
+     */
+    public void updateSprite() {
+        // Vorlage laden
+        BufferedImage template = (BufferedImage) Images.get("/assets/characters/PlayerBase.png");
+        // Grafik-Objekt zum Zeichnen erstellen
+        Graphics2D g = (Graphics2D) sprite.getGraphics();
+
+        // Alles löschen
+        g.setColor(Draw.TRANSPARENCY);
+        g.fillRect(0,0,template.getWidth(null), template.getHeight(null));
+
+        for(int x = 0; x < template.getWidth(null); x++) {
+            for(int y = 0; y < template.getHeight(null); y++) {
+                // Farbe aus der Vorlage abfragen
+                int templateColor = template.getRGB(x,y);
+
+                // Die eingestellte Farbe auswählen ...
+                if(spriteColorMap.containsKey(templateColor))
+                    g.setColor(spriteColorMap.get(templateColor).apply(this).get());
+                // ... oder, wenn es sich nicht um ein Pixel handelt,
+                // welches nicht umgefärbt werden soll, die Farbe aus
+                // der Vorlage beibehalten
+                else
+                    g.setColor(new Color(templateColor, true));
+
+                // Skaliertes Pixel zeichnen
+                g.fillRect(x*PIXEL_SCALE,y*PIXEL_SCALE,PIXEL_SCALE,PIXEL_SCALE);
+            }
+        }
+    }
+
+
     @Override
     public void update(BaseScene scene) {
+        // Inventar öffnen, wenn die Figur angeklickt wird
         if(isClicked())
             SceneStack.INSTANCE.push(new InventarScene());
     }

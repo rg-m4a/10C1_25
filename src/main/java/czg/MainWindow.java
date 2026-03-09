@@ -1,14 +1,17 @@
 package czg;
 
+import czg.objects.PlayerObject;
 import czg.scenes.FoyerScene;
 import czg.scenes.SceneStack;
 import czg.sound.EndOfFileBehaviour;
 import czg.sound.SoundGroup;
 import czg.sound.StreamSound;
 import czg.util.Input;
+import czg.util.character_creator.CharacterCreator;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 /**
  * Das Haupt-Fenster. Hier wird die Grafik ausgegeben.
@@ -96,6 +99,7 @@ public class MainWindow extends JFrame implements Runnable {
 
         //Startszene
         FoyerScene foyer = new FoyerScene();
+        foyer.objects.add(PlayerObject.INSTANCE);
         SceneStack.INSTANCE.push(foyer);
 
         // Fenstergröße beheben
@@ -145,6 +149,10 @@ public class MainWindow extends JFrame implements Runnable {
 
                 // Code für Szenen und Objekte ausführen
                 SceneStack.INSTANCE.update();
+
+                if(Input.INSTANCE.getKeyState(KeyEvent.VK_P).isDown())
+                    CharacterCreator.INSTANCE.get().setVisible(true);
+
                 // Grafik
                 SceneStack.INSTANCE.repaint();
 
