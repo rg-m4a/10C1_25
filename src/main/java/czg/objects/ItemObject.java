@@ -16,21 +16,21 @@ public enum ItemObject{
     ATOM("Atom", "/assets/items/atom.png", 0),
     BSOD("Error-Screen", "/assets/items/blue_screen_of_death.png", 2),
     BRENNER("Brenner", "/assets/items/brenner.png", 2),
-    CAS("Taschenrechner", "/assets/items/CAS.png", 2),
+    CAS("Taschenrechner", "/assets/items/cas.png", 2),
     CD("CD", "/assets/items/cd.png", 0),
     CHROME("Chrome", "/assets/items/chrome.png", 1),
     DNA("DNA", "/assets/items/dna.png", 1),
     FELDSTECHER("Feldstecher", "/assets/items/feldstecher.png", 1),
     GLUEHBIRNE("Glühbirne", "/assets/items/glühbirne.png", 2),
-    IKOSAEDER("Ikosaeder", "/assets/items/Ikosaeder.png", 1),
+    IKOSAEDER("Ikosaeder", "/assets/items/ikosaeder.png", 1),
     KRAFTMESSER("Federkraftmesser", "/assets/items/kraftmesser.png", 0),
     LAUTSPRECHER("Lautsprecher", "/assets/items/lautsprecher.png", 0),
-    LINEAL("Lineal", "/assets/items/Lineal.png", 0),
+    LINEAL("Lineal", "/assets/items/lineal.png", 0),
     MAGNET("Magnet", "/assets/items/magnet.png", 1),
-    MIKROSKOP("Mikroskop", "/assets/items/Mikroskop.png", 2),
+    MIKROSKOP("Mikroskop", "/assets/items/mikroskop.png", 2),
     NERV("Nervenzelle", "/assets/items/nerv.png", 0),
     NEWTONSAPFEL("Newtons Apfel", "/assets/items/newtons_apfel.png", 0),
-    THALES("Satz des Thales", "/assets/items/Satz_des_Thales.png", 1),
+    THALES("Satz des Thales", "/assets/items/satz_des_thales.png", 1),
     SCHUTZBRILLE("Schutzbrille", "/assets/items/schutzbrille.png", 1),
     SCHAEDEL("Schädel", "/assets/items/schädel.png", 1),
     SEIZUREDFROG("Sezierter Frosch", "/assets/items/seizured_frog.png", 2),
@@ -41,8 +41,8 @@ public enum ItemObject{
     VIRUS("Virus", "/assets/items/virus.png", 0),
     WLAN("Wlan", "/assets/items/wlan.png", 1),
     WUNDERKERZE("Wunderkerze", "/assets/items/wunderkerze.png", 1),
-    ZETTEL("Zettel", "/assets/items/Zettel.png", 2),
-    ZIRKEL("Zirkel", "/assets/items/Zirkel.png", 0);
+    ZETTEL("Zettel", "/assets/items/zettel.png", 2),
+    ZIRKEL("Zirkel", "/assets/items/zirkel.png", 0);
         
     public final String name;
     public final Image sprite;
