@@ -1,7 +1,6 @@
 package czg.sound;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -97,8 +96,6 @@ public class SoundGroup {
         if(paused)
             return;
 
-        clean();
-
         for(BaseSound sound : Set.copyOf(soundsAndResumePlaybackStates.keySet())) {
             soundsAndResumePlaybackStates.put(sound, sound.isPlaying());
             sound.setPlaying(false);
@@ -115,8 +112,6 @@ public class SoundGroup {
         if(! paused)
             return;
 
-        clean();
-
         for(BaseSound sound : soundsAndResumePlaybackStates.keySet()) {
             sound.setPlaying(soundsAndResumePlaybackStates.get(sound));
         }
@@ -130,19 +125,6 @@ public class SoundGroup {
      */
     public boolean isPlaying() {
         return ! paused;
-    }
-
-    /**
-     * Entfernt alle Sound-Objekte aus der Gruppe die {@link BaseSound#isStopped()} sind.
-     */
-    private void clean() {
-        for (Iterator<BaseSound> it = soundsAndResumePlaybackStates.keySet().iterator(); it.hasNext(); ) {
-            BaseSound sound = it.next();
-            if(sound.isStopped()) {
-                it.remove();
-                sound.soundGroup = null;
-            }
-        }
     }
 
     @Override
