@@ -73,7 +73,7 @@ public abstract class BaseSound {
      * Spult zu der angegebenen Position vor oder zurück
      * @param position Position zwischen 0 (Anfang) und 1 (Ende)
      */
-    public void seek(float position) {
+    public void seek(double position) {
         if(isStopped()) {
             System.err.println("Kann bereits gestoppten Sound nicht vor-/zurückspulen: "+this);
             return;
@@ -83,11 +83,17 @@ public abstract class BaseSound {
     }
 
     /**
-     * Eigentliche Implementierung; {@link #seek(float)} ist nur ein Wrapper, der
+     * Eigentliche Implementierung; {@link #seek(double)} ist nur ein Wrapper, der
      * {@link #isStopped()} überprüft.
      * @param position Position zwischen 0 (Anfang) und 1 (Ende)
      */
-    protected abstract void seekActual(float position);
+    protected abstract void seekActual(double position);
+
+    /**
+     * Die Wiedergabeposition abfragen
+     * @return Einen Wert zwischen 0 (Anfang) und 1 (Ende), jeweils inklusiv
+     */
+    public abstract double getPosition();
 
     /**
      * Stoppt den Sound. <b>Danach kann er nicht mehr verwendet werden.</b>

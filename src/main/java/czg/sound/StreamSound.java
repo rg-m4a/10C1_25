@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static czg.util.Sounds.TARGET_AUDIO_FORMAT;
 
@@ -71,7 +71,7 @@ public class StreamSound extends BaseSound {
      * soll, {@code >= 0} andernfalls. Wird vom {@link #playbackThread} gelesen, welcher
      * dann ggf. die Position im {@link #inStream} ändert.
      */
-    private final AtomicInteger seekTo = new AtomicInteger(-1);
+    private final AtomicLong seekTo = new AtomicLong(-1);
 
     /**
      * Ob der Sound weiter spielen soll oder angehalten ist
@@ -135,8 +135,13 @@ public class StreamSound extends BaseSound {
     }
 
     @Override
-    protected void seekActual(float position) {
-        seekTo.set(Float.floatToIntBits(position));
+    protected void seekActual(double position) {
+        seekTo.set(Double.doubleToLongBits(position));
+    }
+
+    @Override
+    public double getPosition() {
+        return (bytesRead*1d) / size;
     }
 
     @Override
@@ -208,9 +213,9 @@ public class StreamSound extends BaseSound {
                         }
 
                         // Ggf. vor- oder zurückspulen
-                        int seekToIntBits = sound.seekTo.getAndSet(-1);
-                        if (seekToIntBits != -1) {
-                            int seekToByte = (int) (Float.intBitsToFloat(seekToIntBits) * sound.size);
+                        long seekToLongBits = sound.seekTo.getAndSet(-1);
+                        if (seekToLongBits != -1) {
+                            int seekToByte = (int) (Double.longBitsToDouble(seekToLongBits) * sound.size);
 
                             if (seekToByte > sound.bytesRead) {
                                 // Einfach die entsprechende Anzahl Bytes überspringen
