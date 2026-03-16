@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static czg.util.Sounds.TARGET_AUDIO_FORMAT;
 
@@ -21,12 +21,12 @@ public class StreamSound extends BaseSound {
     /**
      * Buffer für den {@link AudioInputStream}
      */
-    private static final byte[] buffer = new byte[TARGET_AUDIO_FORMAT.getFrameSize() * 128];
+    private static final byte[] buffer = new byte[TARGET_AUDIO_FORMAT.getFrameSize() * 64];
 
     /**
      * Separater Thread, der alle {@code StreamSound}-Instanzen verwaltet und abspielt
      */
-    private static final Thread playbackThread = new Thread(StreamSound::playback);
+    private static final Thread playbackThread = new Thread(StreamSound::playback, "StreamSound-PlaybackThread");
 
     /**
      * Set mit allen {@code StreamSound}-Instanzen
@@ -71,7 +71,7 @@ public class StreamSound extends BaseSound {
      * soll, {@code >= 0} andernfalls. Wird vom {@link #playbackThread} gelesen, welcher
      * dann ggf. die Position im {@link #inStream} ändert.
      */
-    private final AtomicInteger seekTo = new AtomicInteger(-1);
+    private final AtomicLong seekTo = new AtomicLong(-1);
 
     /**
      * Ob der Sound weiter spielen soll oder angehalten ist
@@ -99,14 +99,14 @@ public class StreamSound extends BaseSound {
             throw new RuntimeException(e);
         }
 
-        // Zum Set von StreamSounds hinzufügen
-        playbackInstances.add(this);
-
         // Wiedergabezustand setzen
         isPlaying = new AtomicBoolean(autoPlay);
 
         // EndOfFileBehaviour
         setEndOfFileBehaviour(endOfFileBehaviour);
+
+        // Zum Set von StreamSounds hinzufügen
+        playbackInstances.add(this);
 
         // Ggf. den Wiedergabe-Thread starten bzw. aufwecken
         if (!playbackThread.isAlive()) {
@@ -125,23 +125,27 @@ public class StreamSound extends BaseSound {
     }
 
     @Override
-    public void setPlayingActual(boolean playing) {
+    protected void setPlayingActual(boolean playing) {
         isPlaying.set(playing);
     }
 
     @Override
-    public boolean isPlayingActual() {
+    protected boolean isPlayingActual() {
         return isPlaying.get();
     }
 
     @Override
-    public void seekActual(float position) {
-        seekTo.set(Float.floatToIntBits(position));
+    protected void seekActual(double position) {
+        seekTo.set(Double.doubleToLongBits(position));
+    }
+
+    @Override
+    public double getPosition() {
+        return (bytesRead*1d) / size;
     }
 
     @Override
     public void stop() {
-        super.stop();
         if (isStopped())
             return;
 
@@ -154,6 +158,8 @@ public class StreamSound extends BaseSound {
             }
         }
         playbackInstances.remove(this);
+
+        super.stop();
     }
 
     @Override
@@ -193,7 +199,7 @@ public class StreamSound extends BaseSound {
             while (!playbackInstances.isEmpty()) {
                 for (StreamSound sound : playbackInstances) {
                     // Überspringen, wenn dieser StreamSound nicht abspielen soll
-                    if (!sound.isPlaying()) {
+                    if (sound.isStopped || !sound.isPlaying()) {
                         if (sound.dataLine.isRunning()) sound.dataLine.stop();
                         continue;
                     }
@@ -207,9 +213,9 @@ public class StreamSound extends BaseSound {
                         }
 
                         // Ggf. vor- oder zurückspulen
-                        int seekToIntBits = sound.seekTo.getAndSet(-1);
-                        if (seekToIntBits != -1) {
-                            int seekToByte = (int) (Float.intBitsToFloat(seekToIntBits) * sound.size);
+                        long seekToLongBits = sound.seekTo.getAndSet(-1);
+                        if (seekToLongBits != -1) {
+                            int seekToByte = (int) (Double.longBitsToDouble(seekToLongBits) * sound.size);
 
                             if (seekToByte > sound.bytesRead) {
                                 // Einfach die entsprechende Anzahl Bytes überspringen
@@ -220,7 +226,7 @@ public class StreamSound extends BaseSound {
                                 // Neuen Stream erstellen
                                 sound.inStream = Sounds.getInputStream(sound.audioFilePath);
                                 // Entsprechende Anzahl an Bytes überspringen
-                                sound.bytesRead += sound.inStream.skip(seekToByte);
+                                sound.bytesRead = sound.inStream.skip(seekToByte);
                             }
                         }
 
@@ -259,7 +265,7 @@ public class StreamSound extends BaseSound {
                     playbackThread.wait();
                 }
             } catch (InterruptedException e) {
-                System.err.println("Konnte nicht auf das Fortsetzungs-Signal für den SoundStream-Thread warten: " + e);
+                System.err.println("Konnte nicht auf das Fortsetzungs-Signal für den "+playbackThread.getName()+" warten: " + e);
             }
         }
     }

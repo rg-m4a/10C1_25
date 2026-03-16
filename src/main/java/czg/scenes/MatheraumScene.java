@@ -6,9 +6,14 @@ package czg.scenes;
 
 import czg.objects.BackdropObject;
 import czg.objects.ButtonObject;
+import czg.objects.music_object.MusicLoopObject;
+import czg.objects.music_object.SegmentChangeMarker;
+import czg.sound.BaseSound;
+import czg.sound.EndOfFileBehaviour;
+import czg.sound.SoundGroup;
+import czg.sound.StreamSound;
 import czg.util.Images;
 
-import static czg.MainWindow.HEIGHT;
 import static czg.MainWindow.WIDTH;
 /**
  *
@@ -34,6 +39,26 @@ public class MatheraumScene extends BaseScene{
         unten.x = (WIDTH/2) - (unten.width/2);
         unten.y = 440;
         objects.add(unten);
-        
+
+        // TEST
+        SoundGroup.GLOBAL_SOUNDS.pause();
+
+        BaseSound intro = sounds.get().addSound(new StreamSound("/assets/sound/fight_intro.ogg", false, EndOfFileBehaviour.STOP));
+        BaseSound loop1 = sounds.get().addSound(new StreamSound("/assets/sound/fight_loop.ogg", false, EndOfFileBehaviour.RESTART_AND_PAUSE));
+        BaseSound loop2 = sounds.get().addSound(new StreamSound("/assets/sound/fight_loop.ogg", false, EndOfFileBehaviour.RESTART_AND_PAUSE));
+
+        MusicLoopObject music = new MusicLoopObject()
+                .addTrackSegment(intro, new SegmentChangeMarker(0.928560587d, loop1))
+                .addTrackSegment(loop1, new SegmentChangeMarker(0.972987461d, loop2))
+                .addTrackSegment(loop2, new SegmentChangeMarker(0.972987461d, loop1))
+                .start();
+
+        objects.add(music);
+    }
+
+    @Override
+    public void unload() {
+        super.unload();
+        SoundGroup.GLOBAL_SOUNDS.resume();
     }
 }

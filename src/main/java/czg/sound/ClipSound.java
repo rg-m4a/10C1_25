@@ -71,8 +71,13 @@ public class ClipSound extends BaseSound {
     }
 
     @Override
-    protected void seekActual(float position) {
-        clip.setMicrosecondPosition((long) (clip.getMicrosecondLength() * position));
+    protected void seekActual(double position) {
+        clip.setFramePosition((int) Math.floor(clip.getFrameLength() * position));
+    }
+
+    @Override
+    public double getPosition() {
+        return (clip.getFramePosition()*1d) / clip.getFrameLength();
     }
 
     @Override

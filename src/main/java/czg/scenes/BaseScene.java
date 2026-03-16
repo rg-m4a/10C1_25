@@ -125,7 +125,9 @@ public class BaseScene {
         // Position im Szenen-Stapel vergessen
         sceneStackPosition = -1;
         // Ggf. Sounds stoppen
-        sounds.ifPresent(SoundGroup::removeAllSounds);
+        sounds.ifPresent(SoundGroup::removeAndStopAllSounds);
+        // Unload-Methoden aufrufen
+        objects.forEach(o -> o.unload(this));
     }
 
     /**
