@@ -1,5 +1,6 @@
 package czg.objects;
 
+import czg.MainWindow;
 import czg.scenes.BaseScene;
 import czg.util.Input;
 import czg.util.Input.KeyState;
@@ -10,6 +11,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import static czg.MainWindow.*;
+import czg.util.Images;
 
 /**
  * Ein minimales Spiel-Objekt, bestehend aus einer Position und einem Bild.
@@ -90,6 +92,24 @@ public class BaseObject {
             return false;
 
         return getHitbox().contains(mousePos) && Input.INSTANCE.getMouseState(MouseEvent.BUTTON1) == Input.KeyState.PRESSED;
+    }
+    
+    /**
+     * Dreht das Bild des Objektes und passt die Objektgröße der neuen Bildgröße an.
+     * @param degree Drehung in Grad
+     */
+    public void rotate(double degree) {
+        Image rotatedSprite = Images.rotateImage(sprite, degree);
+        
+        Point imageCenter = new Point(this.x + this.width/2, this.y + this.height/2);
+        
+        this.width = rotatedSprite.getWidth(null) * MainWindow.PIXEL_SCALE;
+        this.height = rotatedSprite.getHeight(null) * MainWindow.PIXEL_SCALE;
+        
+        this.sprite = rotatedSprite;
+        
+        this.x = imageCenter.x -this.width/2;
+        this.y = imageCenter.y - this.height/2;
     }
 
     /**
