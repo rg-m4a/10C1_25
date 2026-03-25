@@ -13,6 +13,8 @@ import java.awt.event.MouseEvent;
 public class TangramPieceObject extends BaseObject {
     public final int ID;
     private final String SPRITE_PATH;
+    private int originalWidth;
+    private int originalHeight;
     public double rotation;
     public MathematicsLevelScene levelScene;
 
@@ -22,6 +24,8 @@ public class TangramPieceObject extends BaseObject {
        super(Images.get(String.format("/assets/minigames/mathematics/tangram_piece_%02d.png", id)));
        this.ID = id;
        this.SPRITE_PATH = String.format("/assets/minigames/mathematics/tangram_piece_%02d.png", id);
+       this.originalWidth = sprite.getWidth(null);
+       this.originalHeight = sprite.getHeight(null);
        this.rotation = 0;
        this.levelScene = null;
     }
@@ -45,47 +49,61 @@ public class TangramPieceObject extends BaseObject {
     }
 
     public static void generatePacked(TangramPieceObject[] pieces, int x, int y, int width, int height) {
+        pieces[0].setRotation(0);
         pieces[0].x = x;
         pieces[0].y = y;
         pieces[0].width = width;
         pieces[0].height = height/2;
-        pieces[0].setRotation(0);
-        
+        pieces[0].originalWidth = pieces[0].width;
+        pieces[0].originalHeight = pieces[0].height;
+
+        pieces[1].setRotation(0);
         pieces[1].x = x;
         pieces[1].y = y;
         pieces[1].width = width/2;
         pieces[1].height = height;
-        pieces[1].setRotation(0);
-        
+        pieces[1].originalWidth = pieces[1].width;
+        pieces[1].originalHeight = pieces[1].height;
+
+        pieces[2].setRotation(0);
         pieces[2].x = x + width/2;
         pieces[2].y = y + height/2;
         pieces[2].width = width/2;
         pieces[2].height = height/2;
-        pieces[2].setRotation(0);
-        
+        pieces[2].originalWidth = pieces[2].width;
+        pieces[2].originalHeight = pieces[2].height;
+
+        pieces[3].setRotation(0);
         pieces[3].x = x;
         pieces[3].y = y + (int) (height*0.75);
         pieces[3].width = width/2;
         pieces[3].height = height/4;
-        pieces[3].setRotation(0);
-        
+        pieces[3].originalWidth = pieces[3].width;
+        pieces[3].originalHeight = pieces[3].height;
+
+        pieces[4].setRotation(0);
         pieces[4].x = x + width/2;
         pieces[4].y = y + height/4;
         pieces[4].width = width/4;
         pieces[4].height = height/2;
-        pieces[4].setRotation(0);
-        
+        pieces[4].originalWidth = pieces[4].width;
+        pieces[4].originalHeight = pieces[4].height;
+
+        pieces[5].setRotation(0);
         pieces[5].x = x + (int) (width*0.75);
         pieces[5].y = y;
         pieces[5].width = width/4;
         pieces[5].height = (int) (height*0.75);
-        pieces[5].setRotation(0);
-        
+        pieces[5].originalWidth = pieces[5].width;
+        pieces[5].originalHeight = pieces[5].height;
+
+        pieces[6].setRotation(0);
         pieces[6].x = x + width/4;
         pieces[6].y = y + height/2;
         pieces[6].width = width/2;
         pieces[6].height = height/2;
-        pieces[6].setRotation(0);
+        pieces[6].originalWidth = pieces[6].width;
+        pieces[6].originalHeight = pieces[6].height;
     }
 
     public void rotate(double degree) {
@@ -100,8 +118,8 @@ public class TangramPieceObject extends BaseObject {
 
         Point imageCenter = new Point(x + width/2, y + height/2);
 
-        width = (int) (rotatedSprite.getWidth(null) * scaleX);
-        height = (int) (rotatedSprite.getHeight(null) * scaleY);
+        width = rotation != 0 ? (int) (rotatedSprite.getWidth(null) * scaleX) : originalWidth;
+        height = rotation != 0 ? (int) (rotatedSprite.getHeight(null) * scaleY) : originalHeight;
 
         sprite = rotatedSprite;
 
