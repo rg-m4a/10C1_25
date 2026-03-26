@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package czg.objects.minigame_objects;
 
 import czg.objects.BaseObject;
@@ -16,26 +12,34 @@ import java.awt.event.MouseEvent;
 
 public class TangramPieceObject extends BaseObject {
     public final int ID;
+    private final String SPRITE_PATH;
+    private int originalWidth;
+    private int originalHeight;
     public double rotation;
-    public  MathematicsLevelScene levelScene;
+    public MathematicsLevelScene levelScene;
 
     private boolean isDragged = false;
 
-    public static final TangramPieceObject[] PIECES = new TangramPieceObject[] {
-        new TangramPieceObject(0, "/assets/minigames/mathematics/tangram_piece_00.png"),
-        new TangramPieceObject(1, "/assets/minigames/mathematics/tangram_piece_01.png"),
-        new TangramPieceObject(2, "/assets/minigames/mathematics/tangram_piece_02.png"),
-        new TangramPieceObject(3, "/assets/minigames/mathematics/tangram_piece_03.png"),
-        new TangramPieceObject(4, "/assets/minigames/mathematics/tangram_piece_04.png"),
-        new TangramPieceObject(5, "/assets/minigames/mathematics/tangram_piece_05.png"),
-        new TangramPieceObject(6, "/assets/minigames/mathematics/tangram_piece_06.png"),
-    };
-
-    private TangramPieceObject(int id, String path) {
-       super(Images.get(path));
+    private TangramPieceObject(int id) {
+       super(Images.get(String.format("/assets/minigames/mathematics/tangram_piece_%02d.png", id)));
        this.ID = id;
+       this.SPRITE_PATH = String.format("/assets/minigames/mathematics/tangram_piece_%02d.png", id);
+       this.originalWidth = sprite.getWidth(null);
+       this.originalHeight = sprite.getHeight(null);
        this.rotation = 0;
        this.levelScene = null;
+    }
+
+    public static TangramPieceObject[] generatePieces() {
+        return new TangramPieceObject[] {
+            new TangramPieceObject(0),
+            new TangramPieceObject(1),
+            new TangramPieceObject(2),
+            new TangramPieceObject(3),
+            new TangramPieceObject(4),
+            new TangramPieceObject(5),
+            new TangramPieceObject(6)
+        };
     }
 
     public static void setLevelScene(TangramPieceObject[] pieces, MathematicsLevelScene levelScene) {
@@ -45,66 +49,86 @@ public class TangramPieceObject extends BaseObject {
     }
 
     public static void generatePacked(TangramPieceObject[] pieces, int x, int y, int width, int height) {
+        pieces[0].setRotation(0);
         pieces[0].x = x;
         pieces[0].y = y;
         pieces[0].width = width;
         pieces[0].height = height/2;
-        pieces[0].setRotation(0);
-        
+        pieces[0].originalWidth = pieces[0].width;
+        pieces[0].originalHeight = pieces[0].height;
+
+        pieces[1].setRotation(0);
         pieces[1].x = x;
         pieces[1].y = y;
         pieces[1].width = width/2;
         pieces[1].height = height;
-        pieces[1].setRotation(0);
-        
+        pieces[1].originalWidth = pieces[1].width;
+        pieces[1].originalHeight = pieces[1].height;
+
+        pieces[2].setRotation(0);
         pieces[2].x = x + width/2;
         pieces[2].y = y + height/2;
         pieces[2].width = width/2;
         pieces[2].height = height/2;
-        pieces[2].setRotation(0);
-        
+        pieces[2].originalWidth = pieces[2].width;
+        pieces[2].originalHeight = pieces[2].height;
+
+        pieces[3].setRotation(0);
         pieces[3].x = x;
         pieces[3].y = y + (int) (height*0.75);
         pieces[3].width = width/2;
         pieces[3].height = height/4;
-        pieces[3].setRotation(0);
-        
+        pieces[3].originalWidth = pieces[3].width;
+        pieces[3].originalHeight = pieces[3].height;
+
+        pieces[4].setRotation(0);
         pieces[4].x = x + width/2;
         pieces[4].y = y + height/4;
         pieces[4].width = width/4;
         pieces[4].height = height/2;
-        pieces[4].setRotation(0);
-        
+        pieces[4].originalWidth = pieces[4].width;
+        pieces[4].originalHeight = pieces[4].height;
+
+        pieces[5].setRotation(0);
         pieces[5].x = x + (int) (width*0.75);
         pieces[5].y = y;
         pieces[5].width = width/4;
         pieces[5].height = (int) (height*0.75);
-        pieces[5].setRotation(0);
-        
+        pieces[5].originalWidth = pieces[5].width;
+        pieces[5].originalHeight = pieces[5].height;
+
+        pieces[6].setRotation(0);
         pieces[6].x = x + width/4;
         pieces[6].y = y + height/2;
         pieces[6].width = width/2;
         pieces[6].height = height/2;
-        pieces[6].setRotation(0);
+        pieces[6].originalWidth = pieces[6].width;
+        pieces[6].originalHeight = pieces[6].height;
     }
 
-    public void rotateAndUpdate(double degree) {
+    public void rotate(double degree) {
         rotation += degree;
 
-        if(this.ID == 6)
-            this.rotation %= 90;
-        else if(this.ID == 5)
-            this.rotation %= 180;
-        else
-            this.rotation %= 360;
+        rotation %= 360;
 
-        rotate(degree);
+        double scaleX = (double) width / sprite.getWidth(null);
+        double scaleY = (double) height / sprite.getHeight(null);
+
+        Image rotatedSprite = Images.rotateImage(Images.get(SPRITE_PATH), rotation);
+
+        Point imageCenter = new Point(x + width/2, y + height/2);
+
+        width = rotation != 0 ? (int) (rotatedSprite.getWidth(null) * scaleX) : originalWidth;
+        height = rotation != 0 ? (int) (rotatedSprite.getHeight(null) * scaleY) : originalHeight;
+
+        sprite = rotatedSprite;
+
+        x = imageCenter.x - width/2;
+        y = imageCenter.y - height/2;
     }
 
     public void setRotation(double degree) {
         double currentRotation = rotation;
-
-        rotation = degree;
 
         rotate(degree - currentRotation);
     }
@@ -138,7 +162,7 @@ public class TangramPieceObject extends BaseObject {
 
             // Rotieren des Objektes
             if(Input.INSTANCE.getKeyState(KeyEvent.VK_R) == Input.KeyState.PRESSED) {
-                rotateAndUpdate(90);
+                rotate(45);
             }
         }
     }
