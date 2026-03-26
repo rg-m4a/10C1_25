@@ -8,6 +8,9 @@ import czg.objects.ButtonObject;
 import czg.objects.Department;
 import czg.scenes.BaseScene;
 import czg.scenes.SceneStack;
+import czg.sound.EndOfFileBehaviour;
+import czg.sound.SoundGroup;
+import czg.sound.StreamSound;
 
 /**
  * Ein Minigame Template bestehend aus einer {@code LevelSelectorScene}, welche die einzelnen Level verknüpft
@@ -37,7 +40,12 @@ public class MinigameScene extends BaseScene {
      * Ein Minigame starten.
      */
     public void startMinigame() {
+        // LevelSelector anzeigen
         SceneStack.INSTANCE.push(levelSelector);
+        // Gang-Musik pausieren
+        SoundGroup.GLOBAL_SOUNDS.pause();
+        // Minigame-Musik starten
+        levelSelector.sounds.get().addSound(new StreamSound("/assets/sound/minigame.ogg", true, EndOfFileBehaviour.LOOP));
     }
 
     /**

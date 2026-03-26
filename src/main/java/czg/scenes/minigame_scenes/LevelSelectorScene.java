@@ -10,6 +10,7 @@ import czg.objects.ButtonObject;
 import czg.scenes.BaseScene;
 import czg.scenes.SceneStack;
 import czg.scenes.cover_settings.CoverSettings;
+import czg.sound.SoundGroup;
 import czg.util.Images;
 
 /**
@@ -17,8 +18,9 @@ import czg.util.Images;
  * @author guest-kaafgt
  */
 public class LevelSelectorScene extends BaseScene {
+
     public LevelSelectorScene(BaseScene level1, BaseScene level2, BaseScene level3) {
-        super(new CoverSettings(true, true, true));
+        super(new CoverSettings(true, true, false));
         objects.add(new BackdropObject(Images.get("/assets/minigames/general/level_selector_background.png")));
 
         ButtonObject buttonLevel1 = new ButtonObject(Images.get("/assets/minigames/general/button_level_1.png"), () -> SceneStack.INSTANCE.push(level1));
@@ -45,5 +47,13 @@ public class LevelSelectorScene extends BaseScene {
         objects.add(buttonLevel1);
         objects.add(buttonLevel2);
         objects.add(buttonLevel3);
+    }
+
+    @Override
+    public void unload() {
+        super.unload();
+
+        // Gang-Musik fortsetzen
+        SoundGroup.GLOBAL_SOUNDS.resume();
     }
 }
