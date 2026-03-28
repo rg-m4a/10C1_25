@@ -43,8 +43,8 @@ public enum MathematicsPuzzle {
         {
             {0.0, 0.55, 0.0},
             {0.2, 0.55, 45.0},
-            {0.68, 0.55, 315.0}, // wird irgendwie zuerst positioniert und dann rotiert, obwohl ich das eigentlich andersherum gemacht habe. machste nix
-            {0.75, 0.0, 225.0}, // same here
+            {0.68, 0.55, 315.0},
+            {0.74, 0.0, 225.0},
             {0.75, 0.47, 0.0},
             {0.58, 0.0, 0.0},
             {0.58, 0.31, 0.0}

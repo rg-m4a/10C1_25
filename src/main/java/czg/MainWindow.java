@@ -97,8 +97,7 @@ public class MainWindow extends JFrame implements Runnable {
         SoundGroup.GLOBAL_SOUNDS.addSound(music);
 
         //Startszene
-        FoyerScene foyer = new FoyerScene();
-        SceneStack.INSTANCE.push(foyer);
+        SceneStack.INSTANCE.push(new FoyerScene());
 
         // Fenstergröße beheben
         SwingUtilities.invokeLater(() -> {

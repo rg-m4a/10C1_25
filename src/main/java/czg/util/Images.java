@@ -6,8 +6,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -91,13 +93,14 @@ public class Images {
         );
 
         // Neue Bounds ermitteln
-        Rectangle2D bounds = new AffineTransformOp(rotate, AffineTransformOp.TYPE_NEAREST_NEIGHBOR).getBounds2D(bSource);
+        Rectangle2D bounds = new AffineTransformOp(rotate, AffineTransformOp.TYPE_BICUBIC).getBounds2D(bSource);
 
         // Neues Bild erstellen
         BufferedImage result = new BufferedImage((int) Math.ceil(bounds.getWidth()), (int) Math.ceil(bounds.getHeight()), BufferedImage.TYPE_INT_ARGB);
 
         // Grafik-Objekt für das Bild erhalten
         Graphics2D g = (Graphics2D) result.getGraphics();
+        g.setRenderingHints(Map.of(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC));
 
         // Gesamte Grafik verschieben
         g.translate(-bounds.getX(), -bounds.getY());
@@ -106,7 +109,22 @@ public class Images {
         // Grafik-Objekt löschen
         g.dispose();
 
-        return result;
+        WritableRaster alpha = result.getAlphaRaster();
+        int minX = 0, minY = 0, maxX = result.getWidth()-1, maxY = result.getHeight()-1;
+
+        while(minX < result.getWidth() && Arrays.stream(alpha.getPixels(minX, 0, 1, result.getHeight(), new int[result.getHeight()])).sum()==0)
+            minX++;
+
+        while(minY < result.getHeight() && Arrays.stream(alpha.getPixels(0, minY, result.getWidth(), 1, new int[result.getWidth()])).sum()==0)
+            minY++;
+
+        while(maxX > minX && Arrays.stream(alpha.getPixels(maxX, 0, 1, result.getHeight(), new int[result.getHeight()])).sum()==0)
+            maxX--;
+
+        while(maxY > minY && Arrays.stream(alpha.getPixels(0, maxY, result.getWidth(), 1, new int[result.getWidth()])).sum()==0)
+            maxY--;
+
+        return result.getSubimage(minX, minY, maxX-minX+1, maxY-minY+1);
     }
 
 
