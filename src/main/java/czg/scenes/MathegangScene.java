@@ -6,7 +6,7 @@ package czg.scenes;
 
 import czg.MainWindow;
 import czg.objects.*;
-import czg.scenes.minigame_scenes.MinigameScene;
+import czg.scenes.minigame_scenes.Minigames;
 import czg.util.Images;
 
 /**
@@ -29,9 +29,8 @@ public class MathegangScene extends BaseScene{
         this.objects.add(PlayerObject.INSTANCE);
         PlayerObject.INSTANCE.x = PlayerObject.GetRandomX();
         PlayerObject.INSTANCE.y = 295;
-
-        MinigameScene mathematicsTest = MinigameScene.generateMinigame(Department.MATHEMATICS);
-
-        objects.add(new ButtonObject(Images.get("/assets/minigames/general/button_menu.png"), mathematicsTest::startMinigame));
+        
+        objects.add(new ButtonObject(Images.get("/assets/minigames/general/button_menu.png"),
+                () -> SceneStack.INSTANCE.push(Minigames.generateMinigame(Department.MATHEMATICS))));
     }
 }

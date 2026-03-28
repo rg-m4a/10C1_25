@@ -7,21 +7,42 @@ import czg.scenes.SceneStack;
 import czg.scenes.cover_settings.CoverSettings;
 import czg.util.Images;
 
+/**
+ * Basis-Klasse für Levels von Minigames. Enthält bereits Buttons zum
+ * Beenden des gesamten Minigames und für die Levelauswahl.
+ */
 public abstract class LevelScene extends BaseScene {
-    final Department DEPARTMENT;
+
+    /**
+     * Um welches der verfügbaren Level {@code 0}, {@code 1} und {@code 2} es sich handelt
+     */
     final int LEVEL;
+    /**
+     * Belohnung, wenn das Level gewonnen wird
+     */
     final ItemObject REWARD;
 
-    public LevelScene(Department department, int level) {
+    /**
+     * Erstellen einer neuen Level-Szene, welche Buttons zum
+     * Beenden des gesamten Minigames und für die Levelauswahl
+     * enthält
+     * @param department Wird verwendet, um das richtige Hintergrundbild zu laden
+     * @param level Siehe {@link #LEVEL}
+     */
+    protected LevelScene(Department department, int level) {
         super(new CoverSettings(false, true, false));
 
-        this.DEPARTMENT = department;
         this.LEVEL = level;
         this.REWARD = ItemObject.getMinigameReward(department, level);
 
         objects.add(new BackdropObject(Images.get(String.format("/assets/minigames/%s/background.png", department.name().toLowerCase()))));
 
-        ButtonObject exitButton = new ButtonObject(Images.get("/assets/minigames/general/button_exit.png"), () -> {SceneStack.INSTANCE.pop(); SceneStack.INSTANCE.pop();});
+        ButtonObject exitButton = new ButtonObject(Images.get("/assets/minigames/general/button_exit.png"), () -> {
+            // Level entfernen
+            SceneStack.INSTANCE.pop();
+            // LevelSelector entfernen
+            SceneStack.INSTANCE.pop();
+        });
 
         exitButton.width /= 2;
         exitButton.height /= 2;
@@ -39,13 +60,27 @@ public abstract class LevelScene extends BaseScene {
         objects.add(menuButton);
     }
 
-    protected void minigameWon() {
-        SceneStack.INSTANCE.push(new MinigameEndScene(this.DEPARTMENT, true, LEVEL, REWARD));
+    /**
+     * Setzt das Level zurück, indem eine neue {@link LevelScene} erstellt
+     * wird, deren Zustand dem Anfangszustand dieser Szene entspricht.
+     * @return Eine <b>eventuell neue</b> {@link LevelScene}
+     */
+    public abstract LevelScene reset();
 
+    /**
+     * Das Level wurde gewonnen.
+     * Zeigt die entsprechende {@link MinigameEndScene} und
+     * fügt {@link #REWARD} zu {@link PlayerObject#inventar} hinzu.
+     */
+    protected void levelWon() {
+        SceneStack.INSTANCE.push(new MinigameEndScene(true, LEVEL, REWARD));
         PlayerObject.INSTANCE.inventar.add(REWARD);
     }
 
-    protected void minigameLost() {
-        SceneStack.INSTANCE.push(new MinigameEndScene(this.DEPARTMENT, false, LEVEL, REWARD));
+    /**
+     * Das Level wurde verloren. Zeigt die entsprechende {@link MinigameEndScene}.
+     */
+    protected void levelLost() {
+        SceneStack.INSTANCE.push(new MinigameEndScene(false, LEVEL, REWARD));
     }
 }

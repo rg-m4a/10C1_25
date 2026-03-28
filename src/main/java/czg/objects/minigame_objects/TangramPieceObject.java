@@ -30,6 +30,16 @@ public class TangramPieceObject extends BaseObject {
        this.levelScene = null;
     }
 
+    @Override
+    public void draw(Graphics2D g) {
+        super.draw(g);
+        g.setColor(Color.RED);
+        g.fillRect(x-1, y-1, 2, 2);
+
+        g.setColor(Color.BLUE);
+        g.drawRect(x, y, width, height);
+    }
+
     public static TangramPieceObject[] generatePieces() {
         return new TangramPieceObject[] {
             new TangramPieceObject(0),

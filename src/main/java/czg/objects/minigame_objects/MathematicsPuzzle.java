@@ -5,7 +5,7 @@ import czg.util.Images;
 import java.awt.*;
 import java.util.Random;
 
-public enum MathematicsPuzzleObject {
+public enum MathematicsPuzzle {
     // Level 1
     // Herz
     P_00("/assets/minigames/mathematics/puzzle_1_1.png", 7, new double[][][] {
@@ -122,37 +122,56 @@ public enum MathematicsPuzzleObject {
         }
     });
 
-    public static final MathematicsPuzzleObject[][] PUZZLES = {
+    public static final MathematicsPuzzle[][] PUZZLES = {
         {
-            MathematicsPuzzleObject.P_00,
-            MathematicsPuzzleObject.P_01,
-            MathematicsPuzzleObject.P_02
+            MathematicsPuzzle.P_00,
+            MathematicsPuzzle.P_01,
+            MathematicsPuzzle.P_02
         }, {
-            MathematicsPuzzleObject.P_10,
-            MathematicsPuzzleObject.P_11,
-            MathematicsPuzzleObject.P_12
+            MathematicsPuzzle.P_10,
+            MathematicsPuzzle.P_11,
+            MathematicsPuzzle.P_12
         }, {
-            MathematicsPuzzleObject.P_20,
-            MathematicsPuzzleObject.P_21,
-            MathematicsPuzzleObject.P_22
+            MathematicsPuzzle.P_20,
+            MathematicsPuzzle.P_21,
+            MathematicsPuzzle.P_22
         }
     };
     
     public static final int MARGIN_OF_ERROR = 20;
 
+    /**
+     * Form der Lösung
+     */
     public final Image sprite;
+
+    /**
+     * Wie viele Teile vorgegeben sind
+     */
     public final int amountOfGivenPieces;
+
+    /**
+     * Mögliche Lösungen
+     */
     public final double[][][] solutions;
 
-    MathematicsPuzzleObject(String path, int amountOfGivenPieces, double[][][] solutions) {
+    MathematicsPuzzle(String path, int amountOfGivenPieces, double[][][] solutions) {
         this.sprite = Images.get(path);
         this.amountOfGivenPieces = amountOfGivenPieces;
         this.solutions = solutions;
     }
 
-    public static MathematicsPuzzleObject getPuzzle(int level) {
-        int r = (int) (new Random().nextDouble() * 3);
-
+    /**
+     * Gibt ein Rätsel für das ausgewählte Level zurück. Die möglichen
+     * Rätsel für jedes Level sind in {@link #PUZZLES} definiert. Aus
+     * diesen wird zufällig eines ausgewählt.
+     * @param level Das Level des Minigames. Entweder {@code 0}, {@code 1} oder {@code 2}.
+     * @return Eine der in {@link MathematicsPuzzle} definierte Enum-Konstanten
+     */
+    public static MathematicsPuzzle getPuzzle(int level) {
+        // Zufallszahl zwischen 0 (inklusiv) und 3 (exklusiv)
+        int r = new Random().nextInt(3);
+        // Entsprechenden Eintrag aus PUZZLES zurückgeben
         return PUZZLES[level][r];
     }
     

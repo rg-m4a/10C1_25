@@ -5,7 +5,7 @@ import czg.util.Images;
 import java.awt.*;
 import java.util.Random;
 
-public enum ComputerSciencePuzzleObject {
+public enum ComputerSciencePuzzle {
     P_00("/assets/minigames/computer_science/puzzle_1_1.png", LogicGateObject.AND, 4),
     P_01("/assets/minigames/computer_science/puzzle_1_2.png", LogicGateObject.OR, 4),
     P_02("/assets/minigames/computer_science/puzzle_1_3.png", LogicGateObject.NAND, 4),
@@ -18,19 +18,19 @@ public enum ComputerSciencePuzzleObject {
     P_21("/assets/minigames/computer_science/puzzle_3_2.png", LogicGateObject.OR, 6),
     P_22("/assets/minigames/computer_science/puzzle_3_3.png", LogicGateObject.NAND, 6);
 
-    public static final ComputerSciencePuzzleObject[][] PUZZLES = {
+    public static final ComputerSciencePuzzle[][] PUZZLES = {
         {
-            ComputerSciencePuzzleObject.P_00,
-            ComputerSciencePuzzleObject.P_01,
-            ComputerSciencePuzzleObject.P_02
+            ComputerSciencePuzzle.P_00,
+            ComputerSciencePuzzle.P_01,
+            ComputerSciencePuzzle.P_02
         }, {
-            ComputerSciencePuzzleObject.P_10,
-            ComputerSciencePuzzleObject.P_11,
-            ComputerSciencePuzzleObject.P_12
+            ComputerSciencePuzzle.P_10,
+            ComputerSciencePuzzle.P_11,
+            ComputerSciencePuzzle.P_12
         }, {
-            ComputerSciencePuzzleObject.P_20,
-            ComputerSciencePuzzleObject.P_21,
-            ComputerSciencePuzzleObject.P_22
+            ComputerSciencePuzzle.P_20,
+            ComputerSciencePuzzle.P_21,
+            ComputerSciencePuzzle.P_22
         }
     };
 
@@ -38,7 +38,7 @@ public enum ComputerSciencePuzzleObject {
     public final LogicGateObject solution;
     public final LogicGateObject[] answers;
 
-    ComputerSciencePuzzleObject(String path, LogicGateObject solution, int amountOfAnswers) {
+    ComputerSciencePuzzle(String path, LogicGateObject solution, int amountOfAnswers) {
         this.sprite = Images.get(path);
         this.solution = solution;
         this.answers = LogicGateObject.getRandomArray(amountOfAnswers, solution);
@@ -48,7 +48,7 @@ public enum ComputerSciencePuzzleObject {
         this.answers[r] = solution;
     }
 
-    public static ComputerSciencePuzzleObject getPuzzle(int level) {
+    public static ComputerSciencePuzzle getPuzzle(int level) {
         int r = (int) (new Random().nextDouble() * 3);
 
         return PUZZLES[level][r];

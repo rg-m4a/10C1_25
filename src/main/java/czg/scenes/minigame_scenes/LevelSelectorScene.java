@@ -7,25 +7,47 @@ package czg.scenes.minigame_scenes;
 import czg.MainWindow;
 import czg.objects.BackdropObject;
 import czg.objects.ButtonObject;
+import czg.objects.Department;
 import czg.scenes.BaseScene;
 import czg.scenes.SceneStack;
 import czg.scenes.cover_settings.CoverSettings;
+import czg.sound.EndOfFileBehaviour;
 import czg.sound.SoundGroup;
+import czg.sound.StreamSound;
 import czg.util.Images;
 
 /**
- *
- * @author guest-kaafgt
+ * Szene, mit welcher die Levels eines Minigames gestartet werden
+ * @see Minigames#generateMinigame(Department)
  */
 public class LevelSelectorScene extends BaseScene {
 
-    public LevelSelectorScene(BaseScene level1, BaseScene level2, BaseScene level3) {
+    /**
+     * Die drei {@link LevelScene}s, zu denen die Buttons führen
+     */
+    public final LevelScene[] levels;
+
+    /**
+     * Neuen Level-Selector erstellen
+     * @param level1 Erstes Level ({@code levels[0]})
+     * @param level2 Zweites Level ({@code levels[1]})
+     * @param level3 Drittes Level ({@code levels[2]})
+     */
+    public LevelSelectorScene(LevelScene level1, LevelScene level2, LevelScene level3) {
+        // Wichtig: Musik nicht pausieren, wenn die Level- oder End-Szenen gezeigt werden
         super(new CoverSettings(true, true, false));
+
+        // Hintergrund
         objects.add(new BackdropObject(Images.get("/assets/minigames/general/level_selector_background.png")));
 
-        ButtonObject buttonLevel1 = new ButtonObject(Images.get("/assets/minigames/general/button_level_1.png"), () -> SceneStack.INSTANCE.push(level1));
-        ButtonObject buttonLevel2 = new ButtonObject(Images.get("/assets/minigames/general/button_level_2.png"), () -> SceneStack.INSTANCE.push(level2));
-        ButtonObject buttonLevel3 = new ButtonObject(Images.get("/assets/minigames/general/button_level_3.png"), () -> SceneStack.INSTANCE.push(level3));
+        // Levels speichern
+        this.levels = new LevelScene[]{level1,level2,level3};
+
+        // Buttons für das Spielen der Levels und zum Verlassen des Minigames
+        // erstellen, positionieren und zur Szene hinzufügen
+        ButtonObject buttonLevel1 = new ButtonObject(Images.get("/assets/minigames/general/button_level_1.png"), () -> SceneStack.INSTANCE.push(levels[0]));
+        ButtonObject buttonLevel2 = new ButtonObject(Images.get("/assets/minigames/general/button_level_2.png"), () -> SceneStack.INSTANCE.push(levels[1]));
+        ButtonObject buttonLevel3 = new ButtonObject(Images.get("/assets/minigames/general/button_level_3.png"), () -> SceneStack.INSTANCE.push(levels[2]));
         ButtonObject buttonExit = new ButtonObject(Images.get("/assets/minigames/general/button_exit.png"), SceneStack.INSTANCE::pop);
 
         buttonLevel1.x = MainWindow.WIDTH / 2 - buttonLevel1.width / 2;
@@ -39,7 +61,7 @@ public class LevelSelectorScene extends BaseScene {
 
         buttonExit.width /= 2;
         buttonExit.height /= 2;
-        buttonExit.x = (int) (MainWindow.WIDTH - buttonExit.width * 2);
+        buttonExit.x = MainWindow.WIDTH - buttonExit.width * 2;
         buttonExit.y = (int) (buttonExit.height * 0.5);
 
         objects.add(buttonExit);
@@ -47,6 +69,11 @@ public class LevelSelectorScene extends BaseScene {
         objects.add(buttonLevel1);
         objects.add(buttonLevel2);
         objects.add(buttonLevel3);
+
+        // Gang-Musik pausieren
+        SoundGroup.GLOBAL_SOUNDS.pause();
+        // Minigame-Musik starten
+        sounds.get().addSound(new StreamSound("/assets/sound/minigame.ogg", true, EndOfFileBehaviour.LOOP));
     }
 
     @Override

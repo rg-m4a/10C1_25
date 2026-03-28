@@ -6,8 +6,20 @@ import czg.scenes.BaseScene;
 import czg.scenes.SceneStack;
 import czg.util.Images;
 
+/**
+ * "Gewonnen"- bzw. "Game Over"-Szene, die am Ende eines
+ * Minigame-Levels angezeigt wird
+ * @see LevelScene
+ */
 public class MinigameEndScene extends BaseScene {
-    public MinigameEndScene(Department department, boolean won, int level, ItemObject reward) {
+
+    /**
+     * End-Szene erstellen
+     * @param won Ob das Minigame gewonnen wurde. Wenn {@code true}, wird die {@code reward} angezeigt
+     * @param level Welches Level des Minigames gespielt wurde. Siehe {@code department} für Begründung.
+     * @param reward {@link ItemObject}, welches die Belohnung für ein gewonnenes Minigame darstellt
+     */
+    public MinigameEndScene(boolean won, int level, ItemObject reward) {
         objects.add(new BackdropObject(Images.get("/assets/minigames/general/background_overlay.png")));
 
         if(won) {
@@ -28,6 +40,7 @@ public class MinigameEndScene extends BaseScene {
             rewardItem.y = (int)((MainWindow.HEIGHT - rewardContainer.height) * 0.9) + (rewardContainer.height-rewardItem.height) / 2;
 
             objects.add(rewardItem);
+            PlayerObject.INSTANCE.inventar.add(reward);
         } else {
             BaseObject banner = new BaseObject(Images.get("/assets/minigames/general/banner_lost.png"));
             banner.x = (MainWindow.WIDTH - banner.width) / 2;
@@ -36,26 +49,14 @@ public class MinigameEndScene extends BaseScene {
             objects.add(banner);
         }
 
-        ButtonObject retryButton = new ButtonObject(Images.get("/assets/minigames/general/button_retry.png"), () -> {
-            SceneStack.INSTANCE.pop();
-            SceneStack.INSTANCE.pop();
-            SceneStack.INSTANCE.pop();
-
-            MinigameScene.resetAndStartMinigame(department, SceneStack.INSTANCE.getTop(), level);
-        });
+        ButtonObject retryButton = new ButtonObject(Images.get("/assets/minigames/general/button_retry.png"), () -> Minigames.resetMinigameLevel(level, true));
 
         retryButton.x = (int)((MainWindow.WIDTH - retryButton.width) * 0.4);
         retryButton.y = (int)((MainWindow.HEIGHT - retryButton.height) * 0.6);
 
         objects.add(retryButton);
 
-        ButtonObject menuButton = new ButtonObject(Images.get("/assets/minigames/general/button_menu.png"), () -> {
-            SceneStack.INSTANCE.pop();
-            SceneStack.INSTANCE.pop();
-            SceneStack.INSTANCE.pop();
-
-            MinigameScene.resetAndStartMinigame(department, SceneStack.INSTANCE.getTop(), -1);
-        });
+        ButtonObject menuButton = new ButtonObject(Images.get("/assets/minigames/general/button_menu.png"), () -> Minigames.resetMinigameLevel(level, false));
 
         menuButton.x = (int)((MainWindow.WIDTH - menuButton.width) * 0.5);
         menuButton.y = (int)((MainWindow.HEIGHT - menuButton.height) * 0.6);
@@ -63,11 +64,12 @@ public class MinigameEndScene extends BaseScene {
         objects.add(menuButton);
 
         ButtonObject exitButton = new ButtonObject(Images.get("/assets/minigames/general/button_exit.png"), () -> {
+            // MinigameEndScene
             SceneStack.INSTANCE.pop();
+            // LevelScene
             SceneStack.INSTANCE.pop();
+            // LevelSelectorScene
             SceneStack.INSTANCE.pop();
-
-            MinigameScene.resetMinigame(department, SceneStack.INSTANCE.getTop());
         });
 
         exitButton.x = (int)((MainWindow.WIDTH - exitButton.width) * 0.6);
