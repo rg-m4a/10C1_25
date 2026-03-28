@@ -13,6 +13,8 @@ public final class Draw {
      */
     public static final Font FONT_TITLE = new Font("Arial", Font.BOLD, 32);
 
+    public static final Font FONT_INFO = new Font("Arial", Font.PLAIN, 18);
+
     /**
      * Völlig durchsichtige Farbe
      */

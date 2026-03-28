@@ -1,6 +1,5 @@
 package czg;
 
-import czg.objects.PlayerObject;
 import czg.scenes.FoyerScene;
 import czg.scenes.SceneStack;
 import czg.sound.EndOfFileBehaviour;
@@ -42,6 +41,14 @@ public class MainWindow extends JFrame implements Runnable {
      * Singleton des Fensters
      */
     public static final MainWindow INSTANCE = new MainWindow();
+
+    /**
+     * Ob Debugging-Informationen angezeigt werden sollen.
+     * <br> {@code 0}: Nichts anzeigen
+     * <br> {@code 1}: Szenen-Stapel in Textform anzeigen
+     * <br> {@code 2}: Objekte mit Hitboxen und Namen anzeigen
+     */
+    public static int debugDrawMode = 0;
 
     /**
      * Damit {@link Input.KeyState#fromTimePressed(long)} bei einem Durchlauf
@@ -153,11 +160,13 @@ public class MainWindow extends JFrame implements Runnable {
                 if(Input.INSTANCE.getKeyState(KeyEvent.VK_P) == Input.KeyState.PRESSED)
                     CharacterCreator.INSTANCE.get().setVisible(true);
                 if(Input.INSTANCE.getKeyState(KeyEvent.VK_M) == Input.KeyState.PRESSED) {
-                    if(SoundGroup.GLOBAL_SOUNDS.isPlaying())
+                    if (SoundGroup.GLOBAL_SOUNDS.isPlaying())
                         SoundGroup.GLOBAL_SOUNDS.pause();
                     else
                         SoundGroup.GLOBAL_SOUNDS.resume();
                 }
+                if(Input.INSTANCE.getKeyState(KeyEvent.VK_D) == Input.KeyState.PRESSED)
+                    debugDrawMode = (debugDrawMode + 1)%3;
 
                 // Grafik
                 SceneStack.INSTANCE.repaint();

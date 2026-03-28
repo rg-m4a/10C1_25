@@ -151,11 +151,6 @@ public class BaseScene {
     }
 
     @Override
-    public String toString() {
-        return getClass().getTypeName();
-    }
-
-    @Override
     public int hashCode() {
         return System.identityHashCode(this);
     }

@@ -1,6 +1,7 @@
 package czg.objects;
 
 import czg.scenes.BaseScene;
+import czg.util.Draw;
 import czg.util.Input;
 import czg.util.Input.KeyState;
 
@@ -8,9 +9,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 import static czg.MainWindow.*;
-import java.awt.image.BufferedImage;
 
 /**
  * Ein minimales Spiel-Objekt, bestehend aus einer Position und einem Bild.
@@ -127,6 +128,18 @@ public class BaseObject {
                 width, height,
                 null
         );
+
+        if(debugDrawMode == 2) {
+            // Position & hitbox
+            g.setColor(Color.RED);
+            g.fillRect(x-1, y-1, 3, 3);
+            g.setColor(Color.BLUE);
+            g.drawRect(x,y,width,height);
+            // Name
+            g.setColor(Color.BLACK);
+            g.setFont(Draw.FONT_INFO);
+            g.drawString(super.toString(), x, y+g.getFont().getSize());
+        }
     }
 
     /**

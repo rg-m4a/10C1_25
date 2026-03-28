@@ -1,7 +1,9 @@
 package czg.scenes;
 
+import czg.MainWindow;
 import czg.scenes.cover_settings.Rules;
 import czg.scenes.cover_settings.Setting;
+import czg.util.Draw;
 import czg.util.Input;
 import org.jetbrains.annotations.Nullable;
 
@@ -335,6 +337,15 @@ public class SceneStack extends JPanel {
         // Alle Szenen zeichnen, die nicht verdeckt und so eingestellt sind,
         // dass sie deshalb ausgeblendet sein sollte.
         processScenes(Rules::coverDisablesDrawing, scene -> scene.draw(g2), false);
+
+        if(MainWindow.debugDrawMode == 1) {
+            // Ggf. die Szenen im Stapel als Text anzeigen
+            g2.setColor(Color.BLACK);
+            g2.setFont(Draw.FONT_INFO);
+            for (int i = scenes.size() - 1; i >= 0; i--) {
+                g2.drawString("#%02d: %s".formatted(i, scenes.get(i)), 10, 25 + 22 * (scenes.size() - i - 1));
+            }
+        }
     }
 
     /**
