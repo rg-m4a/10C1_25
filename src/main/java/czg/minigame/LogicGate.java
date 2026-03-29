@@ -51,20 +51,17 @@ public enum LogicGate {
             boolean valid = false;
             LogicGate rGate = null;
             while (!valid) {
-                valid = true;
-
                 rGate = getRandom();
 
                 if (Arrays.asList(excludedGates).contains(rGate)) {
-                    valid = false;
                     continue;
                 }
                 for (int j = 0; j < length; j++) {
                     if (usedGates[j] == rGate) {
-                        valid = false;
                         break;
                     }
                 }
+                valid = true;
             }
             tmp[i] = rGate;
             usedGates[i] = rGate;
