@@ -4,9 +4,8 @@
  */
 package czg.scenes;
 
-import czg.objects.BackdropObject;
-import czg.objects.PfeilObject;
-import czg.objects.PlayerObject;
+import czg.objects.*;
+import czg.scenes.minigame.Minigames;
 import czg.util.Images;
 
 public class InforaumScene extends BaseScene{
@@ -22,5 +21,7 @@ public class InforaumScene extends BaseScene{
         PlayerObject.INSTANCE.x = 200;
         PlayerObject.INSTANCE.y = 290;
 
+        objects.add(new ButtonObject(Images.get("/assets/minigames/general/button_menu.png"),
+                () -> SceneStack.INSTANCE.push(Minigames.generateMinigame(Department.COMPUTER_SCIENCE))));
     }
 }

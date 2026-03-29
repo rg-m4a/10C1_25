@@ -2,6 +2,7 @@ package czg.scenes.minigame;
 
 import czg.MainWindow;
 import czg.minigame.ComputerSciencePuzzle;
+import czg.minigame.LogicGate;
 import czg.objects.BaseObject;
 import czg.objects.ButtonObject;
 import czg.objects.Department;
@@ -11,6 +12,8 @@ import czg.objects.Department;
  * Schaltkreis erkannt werden müssen.
  */
 public class ComputerScienceLevelScene extends LevelScene {
+    public final int LEVEL;
+    public final ComputerSciencePuzzle PUZZLE;
 
     /**
      * Neue Level-Szene erstellen
@@ -19,32 +22,29 @@ public class ComputerScienceLevelScene extends LevelScene {
     public ComputerScienceLevelScene(int level) {
         super(Department.COMPUTER_SCIENCE, level);
 
+        this.LEVEL = level;
+
         // Zufällig eines von drei für dieses Level verfügbaren
         // Rätsel auswählen
-        ComputerSciencePuzzle puzzle = ComputerSciencePuzzle.getPuzzle(level);
+        this.PUZZLE = ComputerSciencePuzzle.getPuzzle(LEVEL);
 
         int availableHeight = (int) (MainWindow.HEIGHT * 0.7);
-        int gateHeight = availableHeight / puzzle.answers.length;
+        int gateHeight = availableHeight / PUZZLE.answers.length;
 
         // ButtonObjects für die Antwortmöglichkeiten
-        for (int i = 0; i < puzzle.answers.length; i++) {
+        for (int i = 0; i < PUZZLE.answers.length; i++) {
             int finalI = i;
             objects.add(new ButtonObject(
-                    puzzle.answers[i].sprite,
-                    (int) (MainWindow.WIDTH * 0.125),
-                    (MainWindow.HEIGHT - availableHeight) / 2 + i * gateHeight,
-                    () -> {
-                        if (puzzle.answers[finalI] == puzzle.solution)
-                            levelWon();
-                        else
-                            levelLost();
-                    })
-            );
+                PUZZLE.answers[i].sprite,
+                (int) (MainWindow.WIDTH * 0.125),
+                (MainWindow.HEIGHT - availableHeight) / 2 + i * gateHeight,
+                () -> setAnswer(PUZZLE.answers[finalI])
+            ));
         }
 
         // Das eigentliche Rätsel wird durch ein Bild dargestellt
         objects.add(new BaseObject(
-                puzzle.sprite,
+                PUZZLE.sprite,
                 (int) (MainWindow.WIDTH * 0.3),
                 (MainWindow.HEIGHT - availableHeight) / 2,
                 (int) (MainWindow.WIDTH * 0.6),
@@ -52,15 +52,19 @@ public class ComputerScienceLevelScene extends LevelScene {
         ));
     }
 
+    private void setAnswer(LogicGate gate) {
+        if (gate == PUZZLE.solution)
+            levelWon();
+        else
+            levelLost();
+    }
+
     /**
-     * Da die {@link ComputerScienceLevelScene} keinen komplexen
-     * Zustand speichert (wie z.B. {@link MathematicsLevelScene},
-     * wird keine neue Szene erstellt, sondern einfach die aktuelle
-     * weiterverwendet.
-     * @return {@code this}
+     * Generiert eine neue {@link ComputerScienceLevelScene}
+     * @return {@code new {@link ComputerScienceLevelScene}}
      */
     @Override
     public LevelScene reset() {
-        return this;
+        return new ComputerScienceLevelScene(LEVEL);
     }
 }
