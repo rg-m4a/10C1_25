@@ -85,19 +85,27 @@ public class ComputerScienceLevelScene extends LevelScene {
             if(ACTIVE_ANSWERS[i] == gate) {
                 ACTIVE_ANSWERS[i] = null;
                 objects.remove(ANSWER_FRAMES[i]);
-                return;
+            }
+        } else {
+            for(int i = 0; i < ACTIVE_ANSWERS.length; i++) {
+                if(ACTIVE_ANSWERS[i] == null) {
+                    ACTIVE_ANSWERS[i] = gate;
+                    ANSWER_FRAMES[i].x = x;
+                    ANSWER_FRAMES[i].y = y;
+                    objects.add(ANSWER_FRAMES[i]);
+                }
             }
         }
 
-        for(int i = 0; i < ACTIVE_ANSWERS.length; i++) {
-            if(ACTIVE_ANSWERS[i] == null) {
-                ACTIVE_ANSWERS[i] = gate;
-                ANSWER_FRAMES[i].x = x;
-                ANSWER_FRAMES[i].y = y;
-                objects.add(ANSWER_FRAMES[i]);
-                return;
+        boolean solved = true;
+        for (int i = 0; i < PUZZLE.solution.length ; i++) {
+            if (PUZZLE.solution[i] != ACTIVE_ANSWERS[i]) {
+                solved = false;
+                break;
             }
         }
+
+        if (solved) levelWon();
     }
 
     /**
