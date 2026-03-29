@@ -91,9 +91,32 @@ public enum MathematicsPuzzle {
     }),
 
     /**
+     * Level 2: Haus
+     */
+    P_10("/assets/minigames/mathematics/puzzle_2_1.png", 7, new double[][][] {
+        {
+            {0.13, 0.59, 180.0},    // Großes Dreieck 1
+            {0.26, 0.17, -90.0},    // Großes Dreieck 2
+            {0.13, 0.59, 180.0},    // Mittleres Dreieck
+            {0.5, 0.59, 180.0},     // Kleines Dreieck 1
+            {0.69, 0.59, 0.0},      // Kleines Dreieck 2
+            {0.0, 0.28, 45.0},      // Parallelogramm
+            {0.27, 0.0, 45.0}       // Quadrat
+        },
+        {
+            {0.13, 0.59, 180.0},    // Großes Dreieck 1
+            {0.26, 0.17, -90.0},    // Großes Dreieck 2
+            {0.5, 0.59, -90.0},     // Mittleres Dreieck
+            {0.13, 0.59, 180.0},    // Kleines Dreieck 1
+            {0.13, 0.59, 180.0},    // Kleines Dreieck 2
+            {0.0, 0.28, 45.0},      // Parallelogramm
+            {0.27, 0.0, 45.0}       // Quadrat
+        }
+    }),
+    /**
      * Level 2: TODO
      */
-    P_10("/assets/minigames/mathematics/puzzle_1_1.png", 1, new double[][][] {
+    P_11("/assets/minigames/mathematics/puzzle_1_1.png", 7, new double[][][] {
         {
             {0.33, 0.4, 0.0},
             {0.0, 0.0, 180.0},
@@ -107,21 +130,7 @@ public enum MathematicsPuzzle {
     /**
      * Level 2: TODO
      */
-    P_11("/assets/minigames/mathematics/puzzle_1_1.png", 1, new double[][][] {
-        {
-            {0.33, 0.4, 0.0},
-            {0.0, 0.0, 180.0},
-            {0.33, 0.0, 90.0},
-            {0.5, 0.0, 0.0},
-            {0.33, 0.4, 180.0},
-            {0.5, 0.2, 90.0},
-            {0.33, 0.6, 0.0}
-        }
-    }),
-    /**
-     * Level 2: TODO
-     */
-    P_12("/assets/minigames/mathematics/puzzle_1_1.png", 1, new double[][][] {
+    P_12("/assets/minigames/mathematics/puzzle_1_1.png", 7, new double[][][] {
         {
             {0.33, 0.4, 0.0},
             {0.0, 0.0, 180.0},
