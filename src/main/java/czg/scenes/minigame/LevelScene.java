@@ -74,7 +74,8 @@ public abstract class LevelScene extends BaseScene {
      */
     public void levelWon() {
         SceneStack.INSTANCE.push(new MinigameEndScene(true, LEVEL, REWARD));
-        PlayerObject.INSTANCE.inventar.add(REWARD);
+        if(! PlayerObject.INSTANCE.inventar.contains(REWARD))
+            PlayerObject.INSTANCE.inventar.add(REWARD);
     }
 
     /**
