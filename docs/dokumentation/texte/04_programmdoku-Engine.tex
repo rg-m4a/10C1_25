@@ -230,13 +230,6 @@ Ursprung der von dieser Methode zurückgegebenen Koordinaten
 bei der oberen linken Ecke des Fensters \textbf{inklusive Titelleiste}
 liegt.
 
-
-
-\subsubsection{Debugging-Modus}
-
-Durch wiederholtes Drücken der Taste \texttt{D} kann 
-
-
 \subsection{Spiel-Objekte}
 
 Spiel-Objekte werden mithilfe der Klasse \texttt{czg.objects.BaseObject}
@@ -278,20 +271,227 @@ Methoden:
 	      ist. Der optionale Parameter \texttt{includeTransparency}
 	      gibt an, ob auch ein Klick auf transparente Bereiche
 	      des Bildes des Objektes berücksichtigt werden soll.
-	\item \texttt{draw(Graphics2D)}: 
+	\item \texttt{draw(Graphics2D)}: Die vorgegebene Implementierung
+	      dieser Methode zeichnet das Bild des Objektes mit der
+	      gespeicherten Breite und Höhe an der gespeicherten Position
+	      mithilfe der \texttt{drawImage}-Methode des an die Methode
+	      übergebenen \texttt{Graphics2D}-Objektes. Letzteres stammt
+	      von der \texttt{paintComponent}-Methodes des Szenenstapels.
+	      Siehe \ref{programm:engine:szene:stapel}.
+	\item \texttt{update(BaseScene)}: Wird vom Szenen-Stapel bzw.
+	      der Szene, in welcher sich das Objekt befindet, aufgerufen.
+	      Letztere ist dieselbe, welche an die Methode als Parameter
+	      übergeben wird. Die Implementierung dieser Methode in
+	      \texttt{BaseObject} ist leer und kann von Unterklassen
+	      überschrieben werden, die eigene Logik implementieren wollen.
+	\item \texttt{unload(BaseScene)}: Wird aufgerufen, wenn die Szene,
+	      in welcher sich das Objekt befindet, entfernt wird. Letztere
+	      ist, analog zu \texttt{update}, ebenfalls dieselbe, in der
+	      sich das Objekt befindet. Auch hier ist die Implementierung in
+	      \texttt{BaseObject} leer und kann bei bedarf von Unterklassen
+	      überschrieben werden.
 \end{itemize}
+
+Sowohl \texttt{update} als auch \texttt{unload} waren ursprünglich als
+\texttt{abstract} markiert. Jedoch brachte dies den Nachteil, dass
+\texttt{BaseObject} somit ebenfalls abstrakt wurde und somit nicht
+mehr direkt instanziiert werden konnte. Jedoch wurden an einigen
+Stellen im Code Objekte benötigt, welche keine weitere Funktion als
+das darstellen eines Bildes haben sollten, weshalb es also wieder
+ermöglicht werden musste, \glqq{}leere\grqq{} \texttt{BaseObject}s
+ohne weiteren Code zu erstellen.
 
 
 \subsection{Szenen}
 
-\subsubsection{Der Szenenstapel} \label{programm:engine:szene:stapel}
+Eine Szene ist eine Gruppierung von Objekten. Die Umsetzung erfolgt
+über die abstrakte Klasse \texttt{czg.scenes.BaseScene}. Diese speichert
+folgende Daten:
 
+\begin{itemize}
+	\item Eine Liste von \texttt{BaseObject}s. Diese ist zwar \texttt{final},
+	      aber auch \texttt{public}. Es können also von jeder Stelle beliebig
+	      Objekte hinzugefügt und entfernt werden.
+	\item Eine eigene Sound-Gruppe. Siehe \ref{programm:engine:sound:gruppe}.
+	\item Eine Liste von \textit{Tags}. Siehe \ref{programm:engine:szene:verdecken}.
+\end{itemize}
+
+Daneben besitzt \texttt{BaseScene} folgende wesentliche Methoden:
+
+\begin{itemize}
+	\item \texttt{draw(Graphics2D)}: Das \texttt{Graphics2D}-Objekt
+	      stammt vom Szenenstapel. Siehe \ref{programm:engine:szene:stapel}.
+	      Die vorgegebene Implementierung dieser Methode iteriert
+	      einfach über die Liste der Objekte in der Szene und ruft deren
+	      \texttt{draw(Graphics2D)}-Methode auf, wobei das an die
+	      \texttt{draw}-Methode übergebene \texttt{Graphics2D}-Objekt
+	      direkt an die gleichnamige Methode der Objekte übergeben wird.
+	\item \texttt{update(BaseScene)}: Wird vom Szenen-Stapel aufgerufen.
+		  Es wird eine Kopie der Objekt-Liste angelegt, über welche dann
+		  iteriert wird. Dabei wird die \texttt{update(BaseScene)}-Methode
+		  jedes Objekts aufgerufen und die Szene selbst als Parameter
+		  übergeben. Der Grund dafür, dass über eine Kopie der Liste
+		  iteriert wird, ist, dass die Logik der Objekte das ändern
+		  der Objekteliste ihrer Szene beinhalten könnte. Das Ändern
+		  einer Liste während über diese iteriert wird resultiert
+		  jedoch in einer \texttt{ConcurrentModificationException}.
+		  Diese wird so umgangen.
+	\item \texttt{unload(BaseScene)}: Wird aufgerufen, wenn diese
+	      Szene vom Szenenstapel entfernt wird. Die sich in der Sound-Gruppe
+	      der Szene befindenden Sounds werden gestoppt und die
+	      \texttt{unload}-Methode aller Objekte in der Szene
+	      wird aufgerufen.
+	      Siehe auch \ref{programm:engine:szene:stapel}.
+\end{itemize}
+
+Diese drei Methoden sollten von Unterklassen bei bedarf überschrieben
+werden, wobei aber dennoch ein Aufruf der entsprechenden Methode,
+wie sie in \texttt{BaseScene} implementiert ist, stattfinden sollte.
+
+Die Konstruktoren sowie einige weitere Variablen und Methoden
+der Klasse sind in den kommenden zwei Abschnitten erklärt.
+
+
+\subsection{Der Szenenstapel} \label{programm:engine:szene:stapel}
+
+Um mehrere Szenen übereinander anzeigen und deren Logik gemeinsam
+ausführen zu können, steht der \textit{Szenenstapel} in Form der
+Klasse \texttt{czg.scenes.SceneStack} bzw. deren Singleton-Instanz
+\texttt{SceneStack.INSTANCE} zur Verfügung. Diese erweitert
+\texttt{javax.swing.JPanel} und ist die einzige Komponente, die sich
+im Spielfenster befindet.
+
+Die Klasse speichert die folgenden Daten, welche beide als \texttt{private}
+deklariert sind:
+
+\begin{itemize}
+	\item Die Liste der Szenen auf dem Stapel
+	\item Eine weitere Liste, welche für jede Szene im Stapel
+	      die Vereinigungsmenge der Tags der darüber liegenden
+	      Szenen speichert und wie oft jeder Tag jeweils darüber
+	      liegt. Siehe \ref{programm:engine:szene:verdecken}.
+\end{itemize}
+
+Jede \texttt{BaseScene} speichert außerdem ihren Index in der
+Liste des Szenenstapels. Ist die Szene nicht im Stapel, wird
+dieser auf $-1$ gesetzt.
+
+
+\subsubsection{Operationen}
+
+Um den Szenenstapel zu ändern, werden folgende als
+\texttt{public} deklarierte Methoden bereitgestellt:
+
+\begin{itemize}
+	\item \texttt{push(BaseScene)}: Fügt die gegebene Szene ganz oben auf
+	      dem Stapel, also am Ende der Liste ein.
+	\item \texttt{pop}: Entfernt die Szene, die ganz oben auf dem Stapel
+	      liegt, also jene, die zuletzt hinzugefügt wurde.
+	\item \texttt{insert(BaseScene, int)}: Fügt die gegebene Szene an dem
+	      gegebenen Index im Stapel ein.
+	\item \texttt{replace(BaseScene, BaseScene)}: Sucht die erste gegebene
+	      Szene im Stapel und ersetzt sie durch die zweite gegebene Szene.
+	\item \texttt{remove(BaseScene)}: Entfernt die gegebene Szene.
+	\item \texttt{clear}: Entfernt alle Szenen aus dem Stapel.
+\end{itemize}
+
+Beim Entfernen einer Szene wird deren \texttt{unload}-Methode aufgerufen.
+
+
+\subsubsection{Grafik}
+
+Um die Szenen im Stapel und deren Objekte zu zeichnen, überschreibt
+\texttt{SceneStack} zunächst die \texttt{paintComponent(Graphics)}-Methode
+von \texttt{JPanel}. Von dort wird dann die eigentliche Methode aufgerufen,
+die für die Grafik verantwortlich ist: \texttt{draw(Graphics2D)}. Diese
+übernimmt das nun zu \texttt{Graphics2D} umgewandelte \texttt{Graphics}-Objekt,
+welches von \texttt{Swing} für \texttt{paintComponent} bereitgestellt wird.
+\texttt{SceneStack.draw} aktiviert dann über \texttt{Graphics2D.setRenderingHint}
+die \textit{Anti-Aliasing}-Funktion. Diese sorgt dafür, dass vor allem Text
+nicht verpixelt und scharfkantig, sondern ansehnlich und mit weichen
+Konturen dargestellt wird. Dann delegiert \texttt{draw} das eigentliche
+Rendern an die \texttt{SceneStack.processScenes}-Methode. Diese wird
+in kürze erklärt.
+
+Das Auslagern des Grafikcodes in eine separate Methode ist nötig, damit
+diese auch ohne eine grafische Umgebung aufgerufen werden kann, also von
+Tests aus, die z.B. automatisch von GitHub ausgeführt werden, wenn neue
+Commits hochgeladen wurden. In diesem Fall übergibt der Test-Code \texttt{null}
+an \texttt{SceneStack.draw}. Dann wird ein neuer Grafikkontext erstellt,
+welcher nicht an ein Fenster gebunden ist, sondern nur im Speicher existiert,
+aber dennoch von Szenen und Objekten verwendet werden kann.
+
+
+\subsubsection{Logik}
+
+Das Ausführen der Logik von Szenen und Objekten wird
+über die Methode \texttt{SceneStack.update} erreicht.
+Auch diese delegiert an die bereits erwähnte
+ \texttt{processScenes}-Methode.
+
+
+\subsubsection{Iteration und Verarbeitung der Szenen}
+
+Die Methode \texttt{SceneStack.processScenes} erhält drei Parameter:
+
+\begin{enumerate}
+	\item Eine \texttt{java.util.function.Function}, die ein Verdeckungs-Einstellungen-Objekt
+	      annimmt und die spezifische Einstellung, welche bestimmt, ob die Szene bei
+	      der Iteration über die Szenenliste einbezogen werden soll, extrahiert.
+	      \begin{itemize}
+	          \item \texttt{update}: Referenz zur Getter-Methode für \texttt{coverPausesLogic}
+	          \item \texttt{draw}: Referenz zur Getter-Methode für \texttt{coverDisablesDrawing}
+	      \end{itemize}
+	      Siehe \ref{programm:engine:szene:verdecken}.
+	\item Einen \texttt{java.util.Consumer<BaseScene>}, welcher bestimmt, wie mit
+	      den einzelnen Szenen bei der Iteration zu verfahren ist.
+ 	      \begin{itemize}
+	      	\item \texttt{update}: Referenz zu \texttt{BaseObject.update}
+	      	\item \texttt{draw}: Referenz zu \texttt{BaseObject.draw}
+	      \end{itemize}
+	\item Einen \texttt{boolean}, der angibt, ob eine Kopie der Szenenliste
+	      für die Iteration verwendet werden sollte oder nicht.
+\end{enumerate}
+
+Zunächst werden nun, wenn angegeben, jeweils eine Kopie der Szenenliste und der
+Liste der über jeder Szene liegenden Tags erstellt. Dann wird über die Szenen
+iteriert:
+
+\begin{enumerate}
+	\item Anhand der Tags der über der Szene liegenden Szenen wird
+	      die effektiven Verdeckungs-Einstellungen bestimmt. Dann wird
+	      mit der als ersten Parameter übergebenen Funktion die entsprechende
+	      Einstellung daraus extrahiert.
+	\item \begin{enumerate}
+		\item Ist Szene Verdeckt und die Einstellung auf \textit{aktiv} gestellt,
+		      wird die Szene übersprungen und es wird mit der nächsten fortgefahren.
+		\item Andernfalls wird der als zweiter Parameter angegebene \texttt{Consumer}
+		      auf die Szene angewendet.
+	\end{enumerate}
+\end{enumerate}
+
+
+\subsection{Verdecken von Szenen} \label{programm:engine:szene:verdecken}
+
+\texttt{BaseScene} bietet zwei Konstruktoren, einen ohne Parameter und einen
+mit den Verdeckungs-Einstellungen als einzigen Parameter. Ersterer ruft lediglich
+letzteren auf und übergibt ein \texttt{CoverSettings}-Objekt mit Standardeinstellungen.
+Siehe \ref{programm:engine:szene:verdecken}.
+
+\begin{itemize}
+	\item Eine \textit{boolean}-Variable, die speichert ob die Szene von einer
+	anderen verdeckt wird, also ob im Szenen-Stapel eine andere über ihr liegt.
+	Siehe \ref{programm:engine:szene:stapel} und \ref{programm:engine:szene:verdecken}.
+	\item Die \textit{Verdeckungs-Einstellungen}, die angeben, was passieren soll,
+	wenn die Szene von anderen Szenen, ggf. solche mit bestimmten Tags, verdeckt ist.
+	Siehe \ref{programm:engine:szene:stapel} und \ref{programm:engine:szene:verdecken}.
+\end{itemize}
 
 \subsection{Sound}
 
 Die \texttt{Java Sound API} untersetützt standardmäßig nur das unkomprimierte \texttt{WAV}-Format. Die Audiodateien liegen allerdings 
 aus Gründen der effizienteren Speicherplatznutzung im komprimierten \texttt{Ogg/Vorbis}-Format vor. Um diese laden zu können
 
-\subsubsection{Sound-Gruppe} \label{programm:engine:sound:gruppe}
+\subsection{Sound-Gruppe} \label{programm:engine:sound:gruppe}
 
 \end{sloppypar}
