@@ -33,7 +33,7 @@ Sie beinhaltet:
     \begin{itemize}
         \item \texttt{LEVELS}: Ein \texttt{LevelScene}-Array, welches die drei Level beinhaltet.
         \item Ein \texttt{BackdropObject} welches das Hintergrundbild beinhaltet.
-        \item \texttt{exitButton}: Ein \texttt{ButtonObject}, welches das Verlassen des Minispiels mittels Entfernung der obersten zwei Scenen des \texttt{SceneStack} (\texttt{LevelScene} und \texttt{LevelSelectorScene}) ermöglicht.
+        \item \texttt{exitButton}: Ein \texttt{ButtonObject}, welches das Verlassen des Minispiels mittels Entfernung der obersten Scene des \texttt{SceneStack} (\texttt{LevelSelectorScene}) ermöglicht.
         \item \texttt{buttonLevel1}: Ein \texttt{ButtonObject}, welches die erste in \texttt{LEVELS} gespeicherte \texttt{LevelScene} auf den \texttt{SceneStack} pushed.
         \item \texttt{buttonLevel2}: Ein \texttt{ButtonObject}, welches die zweite in \texttt{LEVELS} gespeicherte \texttt{LevelScene} auf den \texttt{SceneStack} pushed.
         \item \texttt{buttonLevel3}: Ein \texttt{ButtonObject}, welches die dritte in \texttt{LEVELS} gespeicherte \texttt{LevelScene} auf den \texttt{SceneStack} pushed.
@@ -78,12 +78,131 @@ Um also ein Minispiel für eine Fachschaft zu implementieren müssen folgende Di
     \begin{enumerate}
         \item Erweiterung der \texttt{LevelScene}, um die Funktionsweise des Spieles zu implementieren.
         \item Hinzufügen von weiteren Klassen oder Resourcen, die von der erweiterten \texttt{LevelScene} benötigt werden.
-        \item Hinzufügen eines \texttt{ButtonObject} in der, den Raum der Fachschaft repräsentierenden, Scene (beispielsweise \texttt{MatheraumScene}), welcher die von \texttt{Mingames::generateMinigame} erstellte \texttt{LevelSelectorScene} auf den \texttt{SceneStack} pushed.
+        \item Hinzufügen eines \texttt{ButtonObject} in der, den Raum der Fachschaft repräsentierenden, Scene (beispielsweise \texttt{MatheraumScene}), welcher die von \texttt{Mingames.generateMinigame} erstellte \texttt{LevelSelectorScene} auf den \texttt{SceneStack} pushed.
     \end{enumerate}
 \end{sloppypar}
 
 In den folgenden Abschnitten sind diese fachschaftspezifischen Erweiterungen erklärt.
 
 \subsubsection{Informatik}
+
+\begin{sloppypar}
+    Für das Minispiel der Fachschaft Informatik wurde die \texttt{LevelScene} zur \texttt{ComputerScienceLevelScene} erweitert, um das Zeichnen, Auswählen und Überprüfen der Logikgatter, sowie das Zeichnen des Schaltkreises zu ermöglichen.
+    Außerdem wird ein \texttt{LogicGate}-Enum, welches die Gatter verwaltet, sowie ein \texttt{ComputerSciencePuzzle}-Enum, das die Schaltkreise bereit stellt, hinzugefügt.    
+\end{sloppypar}
+
+\paragraph{LogicGate} Die Implementierung mittels einer Enumeration bietet sich an, da vorgegebene Logikgatter definiert werden, die nicht verändert oder durch weitere ergänzt werden können.
+Jede Enum-Konstante speichert zusätzlich noch ein Bild, welches das Gatter repräsentiert.
+Zusätzlich werden noch Funktionen zur Generierung einer zufälligen Auswahl an Logikgattern, welche als Antwortmöglichkeiten fungieren, implementiert.
+Sie beinhaltet:
+
+\begin{sloppypar}
+    \begin{itemize}
+        \item \texttt{SPRITE}: Ein \texttt{java.awt.Image}, das das zum Logikgatter gehörende Bild speichert.
+        \item \texttt{getRandom()}: Eine Funktion, welche eine zufällige Enum-Konstante mittels der \texttt{java.util.Random}-Klasse zurückgibt.
+        \item \texttt{getRandomArray(int length, LogicGate[] includedGates)} Eine Funktion, welche ein zufällig generiertes Array an Enum-Konstanten der Länge \texttt{length} zurückgibt, welches jedes Gatter höchstens einmal und alle in \texttt{includedGates} gegebenen Gatter enthält. 
+        \item \texttt{LogicGate(String path)}: Der Konstruktor der Klasse, welcher nur von der Klasse selbst bei der Initialisierung der Konstanten aufgerufen wird.
+            Er speichert das durch \texttt{path} gegebene Bild in \texttt{SPRITE}.
+    \end{itemize}
+\end{sloppypar}
+
+Die \texttt{getRandomArray}-Methode ist zur näheren Erklärung im Folgenden dargestellt.
+
+\begin{lstlisting}[caption=getRandomArray-Methode, label=lst:mggetRandomArray, captionpos=t, language=Java]
+public static LogicGate[] getRandomArray(
+    int length, LogicGate[] includedGates
+) {
+    // Das zu generierende Array
+    LogicGate[] out = new LogicGate[length];
+    // Indizes der Gatter, die beinhaltet werden sollen
+    List<Integer> includedGatesIdx = new ArrayList<>();
+
+    // Abbruch, falls mehr Gatter zurückgegeben werden sollen,
+    // als Enum-Konstanten existieren.
+    if (length > LogicGate.values().length) return null;
+
+    // Abbruch, falls die Länge der zu beinhaltenden Gatter
+    // größer ist, als die der gesamten Liste.
+    if (includedGates.length > length) return null;
+
+    // Generierung der Indizes der Gatter, die beinhaltet
+    // werden sollen
+    for (int i = 0; i < includedGates.length; i++) {
+        // zufälliger Index
+        int r = new Random().nextInt(length);
+
+        // Neuer zufälliger Index, solange der alte bereits
+        // generiert wurde
+        while (includedGatesIdx.contains(r)) {
+            r = new Random().nextInt(length);
+        }
+
+        // Hinzufügen des Indexes
+        includedGatesIdx.add(r);
+    }
+
+    // Generierung des Logikgatter-Arrays
+    for (int i = 0; i < length; i++) {
+        // Überprüfung, ob an Index i ein gegebenes Gatter
+        // platziert oder ein neues Gatter generiert werden soll
+        if (includedGatesIdx.contains(i)) {
+            // Hinzufügen des gegebenen Gatters an dem
+            // in includedGatesIdx gespeicherten Index
+            out[i] = includedGates[includedGatesIdx.indexOf(i)];
+        } else {
+            // Zufälliges Gatter
+            LogicGate rGate = getRandom();
+            // Neues zufälliges Gatter, solange das alte
+            // entweder in den gegebenen Gattern oder
+            // in dem bereits generierten Array enthalten ist.
+            while (
+                Arrays.asList(includedGates).contains(rGate) ||
+                Arrays.asList(out).contains(rGate)
+            ) {
+                rGate = getRandom();
+            }
+
+            // Hinzufügen des Gatters
+            out[i] = rGate;
+        }
+    }
+
+    // Rückgabe des fertigen Arrays
+    return out;
+}
+\end{lstlisting}
+
+\paragraph{ComputerSciencePuzzle} Die Implementierung mittels einer Enumeration bietet sich an, da vorgegebene Schaltkreise definiert werden, die nicht verändert oder durch weitere ergänzt werden können.
+Sie beinhaltet:
+
+\begin{sloppypar}
+    \begin{itemize}
+        \item \texttt{PUZZLES}: Ein statisches, zweidimensionales \texttt{ComputerSciencePuzzle}-Array, welches für jedes Level die zugehörigen Enum-Konstanten speichert.
+        \item \texttt{SPRITE}: Ein \texttt{java.awt.Image}, das das zum Puzzle gehörende Bild speichert.
+        \item \texttt{SOLUTION}: Ein \texttt{LogicGate}-Array, das die im Schaltkreis abgedeckten Logikgatter enthält.
+        \item \texttt{ANSWERS}: Ein \texttt{LogicGate}-Array, das die zur Auswahl stehenden Antwortmöglichkeiten beinhaltet.
+        \item \texttt{getPuzzle(int level)}: Eine Funktion, welche eine zufällige Enum-Konstante basierend auf dem gegebenen level, mittels der \texttt{java.util.Random}-Klasse zurückgibt.
+        \item \texttt{ComputerSciencePuzzle(String path, LogicGate[] solution, int amountOfAnswers)}: Der Konstruktor der Klasse, welcher nur von der Klasse selbst bei der Initialisierung der Konstanten aufgerufen wird.
+            Er speichert das durch \texttt{path} gegebene Bild in \texttt{SPRITE}, die Lösung \texttt{solution} in \texttt{SOLUTION} und generiert \texttt{ANSWERS} mittels \texttt{LogicGate.getRandomArray}.
+    \end{itemize}
+\end{sloppypar}
+
+\paragraph{ComputerScienceLevelScene} Eine erweiterung der \texttt{LevelScene}, welche die grundlegenden Methoden des Informatik-Minispieles implementiert.
+Sie beinhaltet:
+
+\begin{sloppypar}
+    \begin{itemize}
+        \item \texttt{LEVEL}: Die ID des Levels.
+        \item \texttt{PUZZLE}: Das \texttt{ComputerSciencePuzzle} des Levels.
+        \item \texttt{ANSWER\_FRAMES}: Ein \texttt{BaseObject}-Array, das die Rahmen enthält, die um ausgewählte Antworten gezeichnet werden.
+        \item \texttt{ACTIVE\_ANSWERS}: Ein \texttt{LogicGate}-Array, das die geantworteten Logikgatter enthält.
+        \item \texttt{setAnswer(LogicGate gate, int x, int y)}: Eine Prozedur, welche für das Antworten verantwortlich ist.
+            Sie setzt die Rahmen, aktualisiert die geantworteten Gatter, überprüft ob eine Lösung richtig oder falsch ist und beendet das Minispiel entsprechend.
+        \item \texttt{reset()}: Eine Prozedur, die die \texttt{reset}-Methode der \texttt{LevelScene} implementiert, indem sie eine neu generierte \texttt{ComputerScienceLevelScene} zurückgibt.
+        \item \texttt{ComputerScienceLevelScene(int level)}: Der Konstruktor der Klasse, welcher alle Variablen initialisiet und die Gatter, sowie den Schaltkreis platziert.
+    \end{itemize}
+\end{sloppypar}
+
+Die \texttt{setAnswer}-Methode ist zur näheren Erklärung im Folgenden als Struktogramm dargestellt.
 
 \subsubsection{Mathematik}
