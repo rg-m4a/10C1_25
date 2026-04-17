@@ -14,13 +14,17 @@ import java.util.Arrays;
  * gelegt werden muss
  */
 public class MathematicsLevelScene extends LevelScene {
-
     private final TangramPieceObject[] PIECES;
     private final MathematicsPuzzle PUZZLE;
     private final int PUZZLE_X;
     private final int PUZZLE_Y;
     private final int PUZZLE_WIDTH;
     private final int PUZZLE_HEIGHT;
+
+    /**
+     * Ob in der Szene ein Tangram-Stein gezogen wird
+     */
+    public boolean isDragging = false;
 
     /**
      * Neue Level-Szene erstellen

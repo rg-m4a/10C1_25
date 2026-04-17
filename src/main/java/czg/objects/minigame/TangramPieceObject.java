@@ -133,15 +133,18 @@ public class TangramPieceObject extends BaseObject {
         if(mousePos == null || lastMousePos == null)
             return;
 
-        if(! isDragged && isClicked(false)) {
-            // Wenn das Objekt angeklickt wird, verschieben wir es an oberste Stelle (z-Achse) und beginnen, es zu ziehen
+        if (!isDragged && !levelScene.isDragging && isClicked(false)) {
+            // Wenn das Objekt angeklickt wird und noch kein Stein gezogen wird,
+            // verschieben wir es an oberste Stelle (z-Achse) und beginnen, es zu ziehen
             scene.objects.remove(this);
             scene.objects.add(this);
 
             isDragged = true;
+            levelScene.isDragging = true;
         } else if (isDragged && !Input.INSTANCE.getMouseState(MouseEvent.BUTTON1).isDown()) {
             // Wenn die linke Maustaste losgelassen wird, wird das Objekt nicht mehr gezogen
             isDragged = false;
+            levelScene.isDragging = false;
             // Und überprüft, ob das Puzzle gelöst ist
             levelScene.checkPuzzle();
         }
