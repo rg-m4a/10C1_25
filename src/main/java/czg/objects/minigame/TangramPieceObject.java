@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 /**
- * Ein Tangram-Teil, welches für das Mathematik-Minigame
+ * Ein Tangram-Stein, welcher für das Mathematik-Minigame
  * verwendet wird
  */
 public class TangramPieceObject extends BaseObject {
@@ -21,6 +21,9 @@ public class TangramPieceObject extends BaseObject {
      */
     private final String SPRITE_PATH;
 
+    /**
+     * Ausgangsgröße des Steines
+     */
     public int originalWidth;
     public int originalHeight;
 
@@ -28,12 +31,15 @@ public class TangramPieceObject extends BaseObject {
      * Drehung in Grad
      */
     public double rotation;
+    /**
+     * LevelScene in der sich der Stein befindet
+     */
     public MathematicsLevelScene levelScene;
 
     private boolean isDragged = false;
 
     /**
-     * Ein neues Tangram-Teil erstellen
+     * Einen neuen Tangram-Stein erstellen
      * @param id Bestimmt die zu ladende Bilddatei
      */
     private TangramPieceObject(int id) {
@@ -45,6 +51,10 @@ public class TangramPieceObject extends BaseObject {
        this.levelScene = null;
     }
 
+    /**
+     * Erstellen eines Arrays, das alle Tangram-Steine enthält
+     * @return Vollständiges Array an Tangram-Steinen
+     */
     public static TangramPieceObject[] generatePieces() {
         return new TangramPieceObject[] {
             new TangramPieceObject(0),
@@ -57,38 +67,63 @@ public class TangramPieceObject extends BaseObject {
         };
     }
 
+    /**
+     * Festlegen der LevelScene aller Tangram-Steine eines Arrays
+     * @param pieces Die Steine, deren LevelScene gesetzt wird
+     * @param levelScene Die LevelScene
+     */
     public static void setLevelScene(TangramPieceObject[] pieces, MathematicsLevelScene levelScene) {
         for (TangramPieceObject piece : pieces) {
             piece.levelScene = levelScene;
         }
     }
 
+    /**
+     * Drehung in Grad
+     * @param degree Der zu drehende Winkel
+     */
     public void rotate(double degree) {
+        // Drehung + Normalisierung der Rotation (0.0 bis 360.0)
         rotation = (rotation + degree) % 360;
         if (rotation < 0) rotation += 360;
 
+        // Skalierung des Bildes berechnen
         double scaleX = (double) width / sprite.getWidth(null);
         double scaleY = (double) height / sprite.getHeight(null);
 
+        // Bild neu laden und rotieren
         Image rotatedSprite = Images.rotateImage(Images.get(SPRITE_PATH), rotation);
 
+        // Mittelpunkt des Bildes berechnen
         Point imageCenter = new Point(x + width/2, y + height/2);
 
+        // Größe aktualisieren
+        // Falls der Tangram-Stein die ausgangs Rotation besitzt (0) wird die Größe auf die Ausgangsgröße gesetzt
         width = rotation != 0 ? (int) (rotatedSprite.getWidth(null) * scaleX) : originalWidth;
         height = rotation != 0 ? (int) (rotatedSprite.getHeight(null) * scaleY) : originalHeight;
 
+        // Bild des Tangram-Steins aktualisieren
         sprite = rotatedSprite;
 
+        // Tangram-Stein verschieben, sodass der Bildmittelpunkt sich nicht verändert
         x = imageCenter.x - width/2;
         y = imageCenter.y - height/2;
     }
 
+    /**
+     * Automatische Drehung, sodass der Stein eine gewünschte Rotation erhält
+     * @param degree Die gewünschte Rotation in Grad
+     */
     public void setRotation(double degree) {
         double currentRotation = rotation;
 
         rotate(degree - currentRotation);
     }
 
+    /**
+     * Verschiebung und Rotation des Steines
+     * @param scene Die Szene, in welcher sich das Objekt befindet
+     */
     @Override
     public void update(BaseScene scene) {
         // Aktuelle und vorherige Maus-Position abfragen
