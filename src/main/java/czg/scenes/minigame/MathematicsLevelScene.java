@@ -35,8 +35,10 @@ public class MathematicsLevelScene extends LevelScene {
 
         BaseObject puzzleObject = new BaseObject(PUZZLE.sprite, 0, 0);
 
+        // Skalierungsfaktor der Steine und somit auch des Puzzles berechnen
         double scale = Images.get("/assets/minigames/mathematics/tangram_packed.png").getWidth(null) / (double) (MainWindow.HEIGHT/2);
 
+        // Puzzle skalieren
         puzzleObject.width = (int) (puzzleObject.width * scale);
         puzzleObject.height = (int) (puzzleObject.height * scale);
 

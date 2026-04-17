@@ -296,38 +296,64 @@ public enum MathematicsPuzzle {
         return false;
     }
 
+    /**
+     * Überprüfung, ob ein Tangram-Stein mit einer Lösung übereinstimmt
+     * @param piece Der zu überprüfende Stein
+     * @param solution Die korrekte Lösung
+     * @param rotOffset Verschiebung der in der Lösung erwarteten Rotation
+     * @param x X-Position des Puzzles
+     * @param y Y-Position des Puzzles
+     * @param width Breite des Puzzles
+     * @param height Höhe des Puzzles
+     * @return Stein richtig platziert?
+     */
     private boolean matches(TangramPieceObject piece, double[] solution, double rotOffset, int x, int y, int width, int height) {
+        // Anwenden des rotOffsets und Normalisieren der erwarteten Rotation
         double expectedRotation = (solution[2] + rotOffset) % 360;
         if (expectedRotation < 0) expectedRotation += 360.0;
 
+        // Überprüfung, ob X-Position, Y-Position und Rotation übereinstimmen
         return Math.abs(piece.x - (x + solution[0]*width)) <= MARGIN_OF_ERROR &&
                 Math.abs(piece.y - (y + solution[1]*height)) <= MARGIN_OF_ERROR &&
                 piece.rotation == expectedRotation;
     }
-    
+
+    /**
+     * Zufällig ausgewählte, vorgegebene Steine platzieren
+     * @param pieces Array, das alle Tangram-Steine enthält
+     * @param x X-Position des Puzzles
+     * @param y Y-Position des Puzzles
+     * @param width Breite des Puzzles
+     * @param height Höhe des Puzzles
+     */
     private void setGivenPieces(TangramPieceObject[] pieces, int x, int y, int width, int height) {
+        // Initialisierung eines Index-Arrays mit Platzhalter-Werten
         int[] idx = new int[amountOfGivenPieces];
         for(int i = 0; i < amountOfGivenPieces; i++) {
             idx[i] = -1;
         }
-        
+
+        // Generierung der zufälligen Indizes der vorzugebenden Steine
         for(int i = 0; i < amountOfGivenPieces; i++) {
             int rIdx;
+            // Neuer zufälliger Index, solange der alte bereits generiert wurde
             while(true) {
                 rIdx = new Random().nextInt(7);
-                boolean validIdx = true;
-                for(int j = 0; j < amountOfGivenPieces; j++) {
-                    if (idx[j] == rIdx) {
-                        validIdx = false;
+                boolean used = false;
+                for(int j : idx) {
+                    if (j == rIdx) {
+                        used = true;
                         break;
                     }
                 }
-                if(validIdx) break;
+
+                if (!used) break;
             }
             idx[i] = rIdx;
         }
-        
+        // Festlegen einer Lösung des Puzzles
         int rSolution = new Random().nextInt(solutions.length);
+        // Positionierung der Steine
         for(int i : idx) {
             pieces[i].setRotation(solutions[rSolution][i][2]);
             pieces[i].x = (int) (x + solutions[rSolution][i][0]*width);
@@ -342,9 +368,22 @@ public enum MathematicsPuzzle {
             }
         }
     }
-    
+
+    /**
+     * Setzt das Puzzle zurück
+     * @param pieces Die Tangram-Steine, die zurückgesetzt werden sollen
+     * @param x Die X-Position der verpackten Tangram-Steine
+     * @param y Die Y-Position der verpackten Tangram-Steine
+     * @param size Die Größe der verpackten Tangram-Steine
+     * @param px Die X-Position des Puzzles
+     * @param py Die Y-Position des Puzzles
+     * @param pwidth Die Breite des Puzzles
+     * @param pheight Die Höhe des Puzzles
+     */
     public void reset(TangramPieceObject[] pieces, int x, int y, int size, int px, int py, int pwidth, int pheight) {
+        // Steine in Ausgangszustand
         P_INIT.setGivenPieces(pieces, x, y, size, size);
+        // Steine vorgeben
         setGivenPieces(pieces, px, py, pwidth, pheight);
     }
 }
