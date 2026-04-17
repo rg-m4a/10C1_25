@@ -82,7 +82,7 @@ public class MathematicsLevelScene extends LevelScene {
      * dies der Fall, wird {@link #levelWon()} aufgerufen.
      */
     public void checkPuzzle() {
-        if(PUZZLE.isSolutionValid(PIECES, PUZZLE_X, PUZZLE_Y, PUZZLE_WIDTH, PUZZLE_HEIGHT)) {
+        if(PUZZLE.isSolutionValid(PUZZLE_X, PUZZLE_Y, PUZZLE_WIDTH)) {
             levelWon();
         }
     }
