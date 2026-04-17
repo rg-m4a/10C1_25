@@ -1,5 +1,5 @@
 Da die Minispiele alle einem ähnlichen Grundaufbau folgen, bietet es sich an, diesen objektorientiert und modular zu implementieren, um Redundanz zu vermeiden.
-Dieser Grundaufbau besteht aus folgenden Klassen:
+Dieser Grundaufbau besteht aus den folgenden Klassen:
 
 \begin{itemize}
     \item \texttt{LevelScene}
@@ -8,32 +8,32 @@ Dieser Grundaufbau besteht aus folgenden Klassen:
     \item \texttt{Minigames}
 \end{itemize}
 
-\paragraph{LevelScene} Diese abstrakte Klasse ist eine Erweiterung der \texttt{BaseScene} und stellt Fachschaft übergreifende Variablen und Methoden zur Verfügung.
+\paragraph{LevelScene} Diese abstrakte Klasse ist eine Erweiterung der \texttt{BaseScene} und stellt allgemeine Variablen und Methoden zur Verfügung.
 Sie beinhaltet:
 
 \begin{sloppypar}
     \begin{itemize}
-        \item \texttt{REWARD}: Ein \texttt{ItemObject}, welches die Spielen nach erfolgreichendem Beenden des Levels erhalten.
-            Es wird mit Hilfe der Funktion \texttt{getMinigameReward} der \texttt{ItemObject}-Klasse generiert.
+        \item \texttt{REWARD}: Ein \texttt{ItemObject}, welches die Spielenden nach erfolgreichendem Beenden des Levels erhalten.
+            Es wird mit Hilfe der Methode \texttt{getMinigameReward} der \texttt{ItemObject}-Klasse generiert.
         \item Ein \texttt{BackdropObject} welches das zur Fachschaft gehörende Hintergrundbild beinhaltet.
-        \item \texttt{exitButton}: Ein \texttt{ButtonObject}, welches das Verlassen des Minispiels mittels Entfernung der obersten zwei Scenen des \texttt{SceneStack} (\texttt{LevelScene} und \texttt{LevelSelectorScene}) ermöglicht.
-        \item \texttt{menuButton}: Ein \texttt{ButtonObject}, welches die Rückkehr zur Level-Auswahl mittels Entfernung der obersten Scene des \texttt{SceneStack} (\texttt{LevelScene}) ermöglicht.
-        \item \texttt{reset()}: Eine abstrakte Funktion, welche das Zurücksetzten eines Levels ermöglichen soll.
-            Dafür wird sie von den Leveln der Fachschaften implementiert, welche dann je nach Minispiel eine komplett neue Instanz erstellen, oder nur einzelne Elemente neu generieren.
-        \item \texttt{levelWon()}: Eine Prozedur, wodurch eine Instanz der \texttt{MinigameEndScene} auf den \texttt{SceneStack} gepushed wird und \texttt{REWARD} in das Inventar der Spielfigur übergeben wird.
-        \item \texttt{levelLost()}: Eine Prozedur, wodurch eine Instanz der \texttt{MinigameEndScene} auf den \texttt{SceneStack} gepushed wird.
+        \item \texttt{exitButton}: Ein \texttt{ButtonObject}, welches das Verlassen des Minispiels mittels Entfernen der obersten zwei Scenen des \texttt{SceneStack}, hier \texttt{LevelScene} und \texttt{LevelSelectorScene}, ermöglicht.
+        \item \texttt{menuButton}: Ein \texttt{ButtonObject}, welches die Rückkehr zur Level-Auswahl mittels Entfernen der obersten Scene des \texttt{SceneStack}, in diesem Fall die entsprechende \texttt{LevelScene}, ermöglicht.
+        \item \texttt{reset()}: Eine abstrakte Methode, welche das Zurücksetzten eines Levels ermöglichen soll.
+            Dafür wird sie von den Leveln der Fachschaften implementiert, welche dann je nach Minispiel eine komplett neue Instanz von sich erstellen, oder nur einzelne Elemente neu generieren bzw. zurücksetzen.
+        \item \texttt{levelWon()}: Eine Prozedur, welche eine Instanz der \texttt{MinigameEndScene} auf den Szenenstapel hinzufügt und \texttt{REWARD} in das Inventar der Spielfigur übergibt.
+        \item \texttt{levelLost()}: Eine Prozedur, durch deren Aufruf eine Instanz der \texttt{MinigameEndScene} auf den \texttt{SceneStack} gepushed wird.
         \item \texttt{LevelScene(Department department, int level)}: Der Konstruktor der Klasse, welcher mit Hilfe seiner Parameter das Hintergrundbild lädt und die Knöpfe platziert.
     \end{itemize}
 \end{sloppypar}
 
-\paragraph{LevelSelectorScene} Diese Klasse ist eine Erweiterung der \texttt{BaseScene} und verknüpft, neben anderen Funktionen, jeweils drei \texttt{LevelScenes} miteinander.
+\paragraph{LevelSelectorScene} Diese Klasse ist eine Erweiterung der \texttt{BaseScene} und verknüpft, neben anderen Methoden, jeweils drei \texttt{LevelScene}s miteinander.
 Sie beinhaltet:
 
 \begin{sloppypar}
     \begin{itemize}
         \item \texttt{LEVELS}: Ein \texttt{LevelScene}-Array, welches die drei Level beinhaltet.
         \item Ein \texttt{BackdropObject} welches das Hintergrundbild beinhaltet.
-        \item \texttt{exitButton}: Ein \texttt{ButtonObject}, welches das Verlassen des Minispiels mittels Entfernung der obersten Scene des \texttt{SceneStack} (\texttt{LevelSelectorScene}) ermöglicht.
+        \item \texttt{exitButton}: Ein \texttt{ButtonObject}, welches das Verlassen des Minispiels mittels Entfernen der obersten Scene des \texttt{SceneStack} (\texttt{LevelSelectorScene}) ermöglicht.
         \item \texttt{buttonLevel1}: Ein \texttt{ButtonObject}, welches die erste in \texttt{LEVELS} gespeicherte \texttt{LevelScene} auf den \texttt{SceneStack} pushed.
         \item \texttt{buttonLevel2}: Ein \texttt{ButtonObject}, welches die zweite in \texttt{LEVELS} gespeicherte \texttt{LevelScene} auf den \texttt{SceneStack} pushed.
         \item \texttt{buttonLevel3}: Ein \texttt{ButtonObject}, welches die dritte in \texttt{LEVELS} gespeicherte \texttt{LevelScene} auf den \texttt{SceneStack} pushed.
@@ -52,8 +52,8 @@ Sie beinhaltet:
             Es wird nur gezeichnet, falls das Level gewonnen wurde.
         \item \texttt{rewardItem}: Ein \texttt{BaseObject}, welches das gewonnene Item darstellt.
             Es wird nur gezeichnet, falls das Level gewonnen wurde.
-        \item \texttt{exitButton}: Ein \texttt{ButtonObject}, welches das Level mittels der Prozedur \texttt{resetMinigameLevel} der \texttt{Minigames}-Klasse, auf die später noch einmal eingengangen wird, ohne es direkt neu zu starten zurücksetzt und das Minispiel mittels Entfernung der obersten Scene des \texttt{SceneStack} (nach Zurücksetzen: \texttt{LevelSelectorScene}) verlässt.
-        \item \texttt{menuButton}: Ein \texttt{ButtonObject}, welches das Level mittels der Prozedur \texttt{resetMinigameLevel} der \texttt{Minigames}-Klasse ohne es direkt neu zu starten zurücksetzt..
+        \item \texttt{exitButton}: Ein \texttt{ButtonObject}, welches das Level mittels der Prozedur \texttt{resetMinigameLevel} der \texttt{Minigames}-Klasse, auf die später noch einmal eingengangen wird, ohne es direkt neu zu starten zurücksetzt und das Minispiel mittels Entfernen der obersten Scene des \texttt{SceneStack} (nach Zurücksetzen: \texttt{LevelSelectorScene}) verlässt.
+        \item \texttt{menuButton}: Ein \texttt{ButtonObject}, welches das Level mittels der Prozedur \texttt{resetMinigameLevel} der \texttt{Minigames}-Klasse ohne es direkt neu zu starten zurücksetzt.
         \item \texttt{retryButton}: Ein \texttt{ButtonObject}, welches das Level mittels der Prozedur \texttt{resetMinigameLevel} der \texttt{Minigames}-Klasse zurücksetzt.
         \item \texttt{MinigameEndScene(boolean won, int level, ItemObject reward)}: Der Konstruktor der Klasse, welcher mit Hilfe seiner Parameter das Hintergrundbild, das Banner und gegebenenfalls die Belohnung lädt, sowie die Knöpfe platziert.
     \end{itemize}
@@ -64,21 +64,21 @@ Sie beinhaltet:
 
 \begin{sloppypar}
     \begin{itemize}
-        \item \texttt{generateMinigame(Department department)}: Eine Funktion, welche abhängig von der als Parameter gegebenen Fachschaft eine \texttt{LevelSelectorScene} mit den passenden Leveln zurückgibt.
-        \item \texttt{resetMinigameLevel(int level, boolean autoRetry)}: Eine Prozedur, welche die obersten zwei Scene des \texttt{SceneStack} (\texttt{MinigameEndScene} und \texttt{LevelScene}, da diese Funktion nur nach dem Beenden eines Minispieles aufgerufen wird) entfernt und das als Parameter gegebene Level der jetzt oben liegenden \texttt{LevelSelectorScene} mittels der \texttt{reset}-Funktion des Levels zurücksetzt.
+        \item \texttt{generateMinigame(Department department)}: Eine Methode, welche abhängig von der als Parameter gegebenen Fachschaft eine \texttt{LevelSelectorScene} mit den passenden Leveln zurückgibt.
+        \item \texttt{resetMinigameLevel(int level, boolean autoRetry)}: Eine Prozedur, welche die obersten zwei Szenen des \texttt{SceneStack} - \texttt{MinigameEndScene} und \texttt{LevelScene}, da diese Methode nur nach dem Beenden eines Minispieles aufgerufen wird - entfernt und das als Parameter gegebene Level der jetzt oben liegenden \texttt{LevelSelectorScene} mittels der \texttt{reset}-Methode des Levels zurücksetzt.
             Falls der Parameter \texttt{autoRetry} wahr ist, wird zusätzlich das zurückgesetzte Level auf den \texttt{SceneStack} gepushed.
-        \item \texttt{Minigames}: Der Konstruktor der Klasse, welcher als \texttt{private} deklariet ist, da er nicht aufgerufen werden soll.
+        \item \texttt{Minigames}: Der Konstruktor der Klasse, welcher leer ist und als \texttt{private} deklariet ist, da er nicht aufgerufen werden soll.
     \end{itemize}
 \end{sloppypar}
 
-Um also ein Minispiel für eine Fachschaft zu implementieren müssen folgende Dinge geschehen:
+Um also ein Minispiel für eine Fachschaft zu implementieren, müssen folgende Dinge geschehen:
 
 
 \begin{sloppypar}
     \begin{enumerate}
         \item Erweiterung der \texttt{LevelScene}, um die Funktionsweise des Spieles zu implementieren.
         \item Hinzufügen von weiteren Klassen oder Resourcen, die von der erweiterten \texttt{LevelScene} benötigt werden.
-        \item Hinzufügen eines \texttt{ButtonObject} in der, den Raum der Fachschaft repräsentierenden, Scene (beispielsweise \texttt{MatheraumScene}), welcher die von \texttt{Mingames.generateMinigame} erstellte \texttt{LevelSelectorScene} auf den \texttt{SceneStack} pushed.
+        \item Hinzufügen eines \texttt{ButtonObject} in der den Raum der Fachschaft repräsentierenden Szene (beispielsweise \texttt{MatheraumScene}), welches die von \texttt{Mingames.generateMinigame} erstellte \texttt{LevelSelectorScene} auf den \texttt{SceneStack} pushed.
     \end{enumerate}
 \end{sloppypar}
 
@@ -88,19 +88,19 @@ In den folgenden Abschnitten sind diese fachschaftspezifischen Erweiterungen erk
 
 \begin{sloppypar}
     Für das Minispiel der Fachschaft Informatik wurde die \texttt{LevelScene} zur \texttt{ComputerScienceLevelScene} erweitert, um das Zeichnen, Auswählen und Überprüfen der Logikgatter, sowie das Zeichnen des Schaltkreises zu ermöglichen.
-    Außerdem wird ein \texttt{LogicGate}-Enum, welches die Gatter verwaltet, sowie ein \texttt{ComputerSciencePuzzle}-Enum, das die Schaltkreise bereit stellt, hinzugefügt.    
+    Außerdem wurde ein \texttt{LogicGate}-Enum, welches die Gatter verwaltet, sowie ein \texttt{ComputerSciencePuzzle}-Enum, das die Schaltkreise bereit stellt, hinzugefügt.    
 \end{sloppypar}
 
-\paragraph{LogicGate} Die Implementierung mittels einer Enumeration bietet sich an, da vorgegebene Logikgatter definiert werden, die nicht verändert oder durch weitere ergänzt werden können.
+\paragraph{LogicGate} Die Implementierung mittels einer Enumeration bietet sich an, da vorgegebene Logikgatter definiert werden, die nicht verändert oder durch weitere ergänzt werden sollen.
 Jede Enum-Konstante speichert zusätzlich noch ein Bild, welches das Gatter repräsentiert.
-Zusätzlich werden noch Funktionen zur Generierung einer zufälligen Auswahl an Logikgattern, welche als Antwortmöglichkeiten fungieren, implementiert.
-Sie beinhaltet:
+Zusätzlich werden noch Methoden zur Generierung einer zufälligen Auswahl an Logikgattern, welche als Antwortmöglichkeiten fungieren, implementiert.
+Die Klasse beinhaltet:
 
 \begin{sloppypar}
     \begin{itemize}
         \item \texttt{SPRITE}: Ein \texttt{java.awt.Image}, das das zum Logikgatter gehörende Bild speichert.
-        \item \texttt{getRandom()}: Eine Funktion, welche eine zufällige Enum-Konstante mittels der \texttt{java.util.Random}-Klasse zurückgibt.
-        \item \texttt{getRandomArray(int length, LogicGate[] includedGates)}: Eine Funktion, welche ein zufällig generiertes Array an Enum-Konstanten der Länge \texttt{length} zurückgibt, welches jedes Gatter höchstens einmal und alle in \texttt{includedGates} gegebenen Gatter enthält. 
+        \item \texttt{getRandom()}: Eine statische Methode, welche eine zufällige Enum-Konstante mittels der \texttt{java.util.Random}-Klasse zurückgibt.
+        \item \texttt{getRandomArray(int length, LogicGate[] includedGates)}: Eine statische Methode, welche ein zufällig generiertes Array an Enum-Konstanten der Länge \texttt{length} zurückgibt, welches jedes Gatter höchstens einmal und alle in \texttt{includedGates} gegebenen Gatter enthält. 
         \item \texttt{LogicGate(String path)}: Der Konstruktor der Klasse, welcher nur von der Klasse selbst bei der Initialisierung der Konstanten aufgerufen wird.
             Er speichert das durch \texttt{path} gegebene Bild in \texttt{SPRITE}.
     \end{itemize}
@@ -181,7 +181,7 @@ Sie beinhaltet:
         \item \texttt{SPRITE}: Ein \texttt{java.awt.Image}, das das zum Puzzle gehörende Bild speichert.
         \item \texttt{SOLUTION}: Ein \texttt{LogicGate}-Array, das die im Schaltkreis abgedeckten Logikgatter enthält.
         \item \texttt{ANSWERS}: Ein \texttt{LogicGate}-Array, das die zur Auswahl stehenden Antwortmöglichkeiten beinhaltet.
-        \item \texttt{getPuzzle(int level)}: Eine Funktion, welche eine zufällige Enum-Konstante basierend auf dem gegebenen level, mittels der \texttt{java.util.Random}-Klasse zurückgibt.
+        \item \texttt{getPuzzle(int level)}: Eine Methode, welche eine zufällige Enum-Konstante basierend auf dem gegebenen level, mittels der \texttt{java.util.Random}-Klasse zurückgibt.
         \item \texttt{ComputerSciencePuzzle(String path, LogicGate[] solution, int amountOfAnswers)}: Der Konstruktor der Klasse, welcher nur von der Klasse selbst bei der Initialisierung der Konstanten aufgerufen wird.
             Er speichert das durch \texttt{path} gegebene Bild in \texttt{SPRITE}, die Lösung \texttt{solution} in \texttt{SOLUTION} und generiert \texttt{ANSWERS} mittels \texttt{LogicGate.getRandomArray}.
     \end{itemize}
@@ -198,7 +198,7 @@ Sie beinhaltet:
         \item \texttt{ACTIVE\_ANSWERS}: Ein \texttt{LogicGate}-Array, das die geantworteten Logikgatter enthält.
         \item \texttt{setAnswer(LogicGate gate, int x, int y)}: Eine Prozedur, welche für das Antworten verantwortlich ist.
             Sie setzt die Rahmen, aktualisiert die geantworteten Gatter, überprüft ob eine Lösung richtig oder falsch ist und beendet das Minispiel entsprechend.
-        \item \texttt{reset()}: Eine Funktion, die die \texttt{reset}-Methode der \texttt{LevelScene} implementiert, indem sie eine neu generierte \texttt{ComputerScienceLevelScene} zurückgibt.
+        \item \texttt{reset()}: Die Implementierung der \texttt{LevelScene.reset}-Methode der. Sie gibt eine neu generierte \texttt{ComputerScienceLevelScene} zurück.
         \item \texttt{ComputerScienceLevelScene(int level)}: Der Konstruktor der Klasse, welcher alle Variablen initialisiet und die Gatter, sowie den Schaltkreis platziert.
     \end{itemize}
 \end{sloppypar}
@@ -216,10 +216,10 @@ Die \texttt{setAnswer}-Methode ist zur näheren Erklärung im Folgenden als Stru
 
 \begin{sloppypar}
     Für das Minispiel der Fachschaft Mathematik wurde die \texttt{LevelScene} zur \texttt{MathematicsLevelScene} erweitert, um das Zeichnen und Überprüfen der Tangramsteine, sowie das Zeichnen der Silhouette zu ermöglichen.
-    Außerdem wird eine \texttt{TangramPieceObject}-Klasse, welche die Tangramsteine verwaltet, sowie ein \texttt{MathematicsPuzzle}-Enum, das die Silhouette bereit stellt, hinzugefügt.    
+    Außerdem wurde eine \texttt{TangramPieceObject}-Klasse, welche die Tangramsteine verwaltet, sowie ein \texttt{MathematicsPuzzle}-Enum, das die Silhouette bereitstellt, hinzugefügt.    
 \end{sloppypar}
 
-\paragraph{TangramPieceObject} Diese Klasse erweiter das \texttt{BaseObject}.
+\paragraph{TangramPieceObject} Diese Klasse erweitert das \texttt{BaseObject}.
 Dadurch sorgt sie dafür, dass jeder Stein ein Bild besitzt und verschoben, sowie rotiert werden kann.
 Sie beinhaltet:
 
@@ -230,13 +230,13 @@ Sie beinhaltet:
         \item \texttt{rotation}: Die Rotation des Steines.
         \item \texttt{levelScene}: Die \texttt{MathematicsLevelScene}, zu der der Stein gehört.
         \item \texttt{isDragged}: Ein \texttt{boolean}, welcher speichert, ob der Stein gerade gezogen wird.
-        \item \texttt{generatePieces()}: Eine statische Funktion, die ein Array, welches alle Tangram Steine beinhaltet, zurückgibt.
+        \item \texttt{generatePieces()}: Eine statische Methode, die ein Array, welches alle Tangramsteine beinhaltet, zurückgibt.
         \item \texttt{setLevelScene(TangramPieceObject[] pieces, MathematicsLevelScene levelScene)}: Eine statische Prozedur, die bei jedem in \texttt{pieces} gegebenen Tangram-Stein die \texttt{levelScene} festlegt.
         \item \texttt{rotate(double degree)}: Eine Prozedur, die den Stein um den gegebenen Winkel in mathematisch negative Richtung dreht.
         \item \texttt{setRotation(double degree)}: Eine Prozedur, die den Stein so dreht, dass dieser eine Rotation von \texttt{degree} besitzt.
         \item \texttt{update(BaseScene scene)}: Eine Implementierung der \texttt{update}-Prozedur der \texttt{BaseScene}.
             Sie ermöglicht Verschiebung und Drehung des Tangram-Steines.
-        \item \texttt{TangramPieceObject(int id)}: Der Konstruktor der Klasse, welcher als \texttt{private} deklariert ist, da immer ein gesamter Satz Tangram-Steine mittels der \texttt{generatePieces}-Funktion erstellt werden soll.
+        \item \texttt{TangramPieceObject(int id)}: Der Konstruktor der Klasse, welcher als \texttt{private} deklariert ist, da immer ein gesamter Satz Tangram-Steine mittels der \texttt{generatePieces}-Methode erstellt werden soll.
             Er lädt das von \texttt{id} abhängige Bild und initialisiert Variablen.
     \end{itemize}
 \end{sloppypar}
@@ -309,7 +309,7 @@ Sie beinhaltet:
         \item \texttt{PUZZLES}: Ein statisches, zweidimensionales \texttt{MathematicsPuzzle}-Array, welches für jedes Level die zugehörigen Enum-Konstanten speichert.
         \item \texttt{SPRITE}: Ein \texttt{java.awt.Image}, das das zum Puzzle gehörende Bild speichert.
         \item \texttt{MARGIN\_OF\_ERROR}: Die prozentuale Abweichung der bedeckten Fläche, sodass eine Belegung trotzdem als Lösung gilt.
-        \item \texttt{SOLUTIONS}: Ein dreidimensionales \texttt{Double}-Array, welches für jede Lösung (erste Dimension), für jeden Tangram-Stein (zweite Dimension) die X-Position, Y-Position und Rotation (dritte Dimension) speichert.
+        \item \texttt{SOLUTIONS}: Ein dreidimensionales \texttt{dosuble}-Array, welches für jede Lösung (erste Dimension), für jeden Tangram-Stein (zweite Dimension) die X-Position, Y-Position und Rotation (dritte Dimension) speichert.
             Dabei werden erstere als relative Position gespeichert, also als \texttt{double} zwischen $0$ und $1$, der angibt, bei wie viel Prozent der Gesamtbreite beziehungsweise Gesamthöhe sich der Stein befindet.
             Eine Besonderheit stellt der Ausgangszustand, welcher ebenfalls als ein Puzzle gespeichert wird, bei dem alle Steine vorgegeben sind, dar.
             Dieser speichert zusätzlich noch die Breite und die Höhe der Steine, um diese entsprechend zurückzusetzten.
@@ -317,8 +317,8 @@ Sie beinhaltet:
             Dadurch ist es auch nicht unbedingt notwendig mehrere Lösungen pro Puzzle zu definieren, jedoch entsteht dadurch mehr Variabilität.
         \item \texttt{AMOUNT\_OF\_GIVEN\_PIECES}: Die Anzahl an bereits platzierten Steinen.
         \item \texttt{ANSWERS}: Ein \texttt{LogicGate}-Array, das die zur Auswahl stehenden Antwortmöglichkeiten beinhaltet.
-        \item \texttt{getPuzzle(int level)}: Eine Funktion, welche eine zufällige Enum-Konstante basierend auf dem gegebenen level, mittels der \texttt{java.util.Random}-Klasse zurückgibt.
-        \item \texttt{isSolutionValid(int x, int y, int width)}: Eine Funktion, die berechnet, wie viele Pixel der Silhouette von Tangramsteinen verdeckt sind und wie viele Pixel die Silhouette insgesamt enthält.
+        \item \texttt{getPuzzle(int level)}: Eine Methode, welche eine zufällige Enum-Konstante basierend auf dem gegebenen level, mittels der \texttt{java.util.Random}-Klasse zurückgibt.
+        \item \texttt{isSolutionValid(int x, int y, int width)}: Eine Methode, die berechnet, wie viele Pixel der Silhouette von Tangramsteinen verdeckt sind und wie viele Pixel die Silhouette insgesamt enthält.
             Dadurch wird dann ermittelt, wie viel Prozent der Silhoutte verdeckt sind und $p\% < 1-MARGIN\_OF\_ERROR$ zurückgegeben.
         \item \texttt{setGivenPieces(TangramPieceObject[] pieces, int x, int y, int width, int height)}: Eine Prozedur, die die richtige Position und Rotation zufällig aus \texttt{pieces} ausgewählter Tangramsteine vorgibt.
         \item \texttt{reset(TangramPieceObject[] pieces, int x, int y, int size, int px, int py, int pwidth, int pheight)}: Eine Prozedur, welche die Steine mittels \texttt{setGivenPieces} in den Ausgangszustand zurücksetzt und neu für das Puzzle vorgibt.
@@ -376,7 +376,7 @@ Sie beinhaltet:
         \item \texttt{PUZZLE\_HEIGHT}: Die Höhe der Silhouette.
         \item \texttt{isDragging}: Ein \texttt{boolean}, der speichert, ob gerade ein Tangramstein gezogen wird.
             Dadurch wird verhindert, dass mehrere Steine gleichzeitig gezogen werden.
-        \item \texttt{reset()}: Eine Funktion, die die \texttt{reset}-Methode der \texttt{LevelScene} implementiert, indem sie eine neu generierte \texttt{MathematicsLevelScene} zurückgibt.
+        \item \texttt{reset()}: Eine Methode, die die \texttt{reset}-Methode der \texttt{LevelScene} implementiert, indem sie eine neu generierte \texttt{MathematicsLevelScene} zurückgibt.
         \item \texttt{checkPuzzle()}: Eine Prozedur, die mittels der \texttt{isSolutionValid}-Methode des \texttt{PUZZLE} überprüft, ob das Level gelöst wurde und in diesem Fall das Level beendet.
         \item \texttt{MathematicsLevelScene(int level)}: Der Konstruktor der Klasse, welcher alle Variablen initialisiet und die Steine, sowie die Silhouette platziert.
     \end{itemize}
