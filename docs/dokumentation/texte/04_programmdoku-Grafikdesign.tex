@@ -88,7 +88,7 @@ Dieses Türobjekt ist ähnlich wie das Pfeilobjekt gestaltet mit dem Unterschied
 Man klickt im Endeffekt also nicht tatsächlich auf die Tür, sondern auf ein unsichtbares Objekt, welches über die Tür gelegt wurde, wobei für den Spieler dieser Unterschied nicht erkennbar ist. \\
 In allen anderen Bereichen funktioniert das Türobjekt genauso wie das Pfeilobjekt, es werden Original- und Zielszene festgelegt, welche am Ende im Szenenstapel entfernt (Originalszene) bzw. hinzugefügt (Zielszene) werden.
 
-\begin{lstlisting}[caption=TürObject, label=lst:pfeilobject, captionpos=p, language=Java]
+\begin{lstlisting}[caption=InvisibleDoorObject, label=lst:invisibledoorobject, captionpos=t, language=Java]
 public class InvisibleDoorObject extends BaseObject{
 	//Initialisieren eines Ziels (Wohin soll die Tuer fuehren?)
 	public Supplier<BaseScene> target;
@@ -119,7 +119,7 @@ public class InvisibleDoorObject extends BaseObject{
 \subsection{Gang- und Raumszenen}
 Für jede Gang-/Raumszene wurde eine eigene Klasse erstellt, welche allgemein mit \glqq OrtScene\grqq\ benannt wurden. In diesen Klassen, welche die \texttt{BaseScene} erweitern, wird zunächst auf das jeweilige Bild zugegriffen. Danach wird die Pfeilobjekt-Klasse verwendet, um Pfeilobjekte einzufügen, welche in andere Szenen führen. Zum Schluss wird die Spielfigur mit in jeder Szene individueller Position zur Szene hinzugefügt.
 
-\begin{lstlisting}[caption=Mathegangszene, label=lst:mahtegangszene, captionpos=m, language=Java]
+\begin{lstlisting}[caption=Mathegangszene, label=lst:mahtegangszene, captionpos=t, language=Java]
 public class MathegangScene extends BaseScene{
 	public MathegangScene(){
 		//Einfügen des Hintergrunds
@@ -148,7 +148,7 @@ public class MathegangScene extends BaseScene{
 \subsubsection{Position der Spielfigur}
 In den meisten Szenen wird die x-Koordinate mithilfe der Funktion \texttt{GetRandomX} bestimmt, welche in der Klasse \texttt{PlayerObject} festgelegt ist. 
 
-\begin{lstlisting}[caption=GetRandonX-Methode, label=lst:getrandomx, captionpos=g, language=Java]
+\begin{lstlisting}[caption=GetRandonX-Methode, label=lst:getrandomx, captionpos=t, language=Java]
 /* Funktion zum Festlegen einer zufaelligen x-Koordinate fuer die 
 Spielfigur */
 public static int GetRandomX(){
