@@ -143,7 +143,7 @@ public class MainWindow extends JFrame implements Runnable {
                 SceneStack.INSTANCE.update();
 
                 // Spezielle Tasten
-                if(Input.INSTANCE.getKeyState(KeyEvent.VK_P) == Input.KeyState.PRESSED)
+                if(CharacterCreator.enabled && Input.INSTANCE.getKeyState(KeyEvent.VK_P) == Input.KeyState.PRESSED)
                     CharacterCreator.INSTANCE.get().setVisible(true);
                 if(Input.INSTANCE.getKeyState(KeyEvent.VK_M) == Input.KeyState.PRESSED) {
                     Sounds.HALLWAY_MUSIC.setPlaying(!Sounds.HALLWAY_MUSIC.isPlaying());

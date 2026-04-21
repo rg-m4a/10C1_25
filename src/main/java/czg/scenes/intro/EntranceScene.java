@@ -7,6 +7,7 @@ import czg.scenes.BaseScene;
 import czg.scenes.SceneStack;
 import czg.util.Images;
 import czg.util.Sounds;
+import czg.util.character_creator.CharacterCreator;
 
 import static czg.MainWindow.*;
 
@@ -29,6 +30,8 @@ public class EntranceScene extends BaseScene {
 
         PlayerObject.INSTANCE.allowInventory = false;
         objects.add(PlayerObject.INSTANCE);
+
+        CharacterCreator.enabled = true;
 
         Sounds.HALLWAY_MUSIC.getVolumeControl().setValue(-8f);
 
