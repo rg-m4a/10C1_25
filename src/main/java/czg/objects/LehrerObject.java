@@ -12,10 +12,10 @@ import java.util.Random;
 
 public class LehrerObject extends BaseObject{
 
-    public final String FACHSCHAFT;
+    public final Department FACHSCHAFT;
     public static List<ItemType> lehrer_items;
 
-    public LehrerObject(int x, int y, String FACHSCHAFT) {
+    public LehrerObject(int x, int y, Department FACHSCHAFT) {
         super(Images.get("/assets/characters/bre.png"), x, y);
         this.FACHSCHAFT = FACHSCHAFT;
         this.lehrer_items = Arrays.asList(ItemType.NEWTONSAPFEL, ItemType.ATOM, ItemType.CHROME, ItemType.BSOD);
@@ -61,23 +61,23 @@ public class LehrerObject extends BaseObject{
     public static Image getImage(Department fachschaft) { // ordnet den Fachschaften die Lehrer mit Bild zu
         if (fachschaft == Department.COMPUTER_SCIENCE) {
             
-            return Images.get("assets/characters/bre.png");
+            return Images.get("/assets/characters/bre.png");
                     
         } else if (fachschaft == Department.PHYSICS) {
              
-            return Images.get("assets/characters/tno.png");
+            return Images.get("/assets/characters/tno.png");
             
         } else if (fachschaft == Department.MATHEMATICS) {
              
-            return Images.get("assets/characters/gei.png");  
+            return Images.get("/assets/characters/gei.png");
             
         } else if (fachschaft == Department.BIOLOGY) {
 
-            return Images.get("assets/characters/kho.png");
+            return Images.get("/assets/characters/kho.png");
             
         } else if (fachschaft == Department.CHEMISTRY) {
             
-            return Images.get("assets/characters/kko.png");
+            return Images.get("/assets/characters/kko.png");
         }
         
         throw new IllegalArgumentException("Konnte der Fachschaft "+fachschaft+", kein Foto zuordnen!");
@@ -89,6 +89,7 @@ public class LehrerObject extends BaseObject{
 
         if(KampfScene.lehrerVerteidigung) {
             KampfScene.Endschaden = verteidigung(KampfScene.Zwischenschaden);
+            KampfScene.LehrerLeben -= KampfScene.Endschaden;
             KampfScene.lehrerVerteidigung = false;
             KampfScene.lehrerTurn = true;
         }

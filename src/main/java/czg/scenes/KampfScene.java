@@ -1,4 +1,5 @@
 package czg.scenes;
+import czg.MainWindow;
 import czg.objects.*;
 import czg.objects.music_loop_object.MusicLoopObject;
 import czg.objects.music_loop_object.SegmentChangeMarker;
@@ -25,9 +26,13 @@ public class KampfScene extends BaseScene{
     public static int Endschaden = 0;
     public static int LehrerLeben = 10;
     public static int PlayerLeben = 10;
+    public static ItemType clicked;
+    public static Department FACHSCHAFT;
 
-    public KampfScene(String FACHSCHAFT){
+    public KampfScene(Department FACHSCHAFT){
         super();
+        this.FACHSCHAFT = FACHSCHAFT;
+
         coverSettings.setRules(new Rules(Setting.KEEP, Setting.OFF, Setting.KEEP), "inventar");
 
         //Einfügen des Hintergrunds
@@ -35,7 +40,7 @@ public class KampfScene extends BaseScene{
 
         imKampf = true;
 
-        LehrerObject Lehrer = new LehrerObject(600, 300, FACHSCHAFT);
+        LehrerObject Lehrer = new LehrerObject(700, 200, FACHSCHAFT);
         this.objects.add(Lehrer);
         this.objects.add(PlayerObject.INSTANCE);
         PlayerObject.INSTANCE.x = 330;
@@ -59,9 +64,22 @@ public class KampfScene extends BaseScene{
     @Override
     public void update() {
         super.update();
+        clicked = InventarScene.getClickedItem();
+        if(clicked != null)
+            System.out.println(clicked);
 
         if(timer > 0) {
             timer -= 1;
+        }
+
+        // Das unloaden funktioniert noch nicht
+        if(PlayerLeben <= 0) {
+            unload();
+        }
+
+        if(LehrerLeben <= 0) {
+            MainWindow.UebrigeLehrer -= 1;
+            unload();
         }
     }
 

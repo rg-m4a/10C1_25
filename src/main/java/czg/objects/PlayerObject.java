@@ -169,16 +169,17 @@ public class PlayerObject extends BaseObject{
             if(KampfScene.PlayerVerteidigung) {
                 if(KampfScene.timer == 0) {
                     KampfScene.Endschaden = KampfScene.Zwischenschaden;
+                    KampfScene.PlayerLeben -= KampfScene.Endschaden;
                     KampfScene.PlayerVerteidigung = false;
                     KampfScene.PlayerTurn = true;
                     return;
                 }
                 else {
-                    ItemType clicked = InventarScene.getClickedItem();
-                    if(clicked != null) {
-                        KampfScene.Endschaden = verteidigung(KampfScene.Zwischenschaden, clicked);
-                        removeItem(clicked);
+                    if(KampfScene.clicked != null) {
+                        KampfScene.Endschaden = verteidigung(KampfScene.Zwischenschaden, KampfScene.clicked);
+                        removeItem(KampfScene.clicked);
                         InventarScene.rebuild();
+                        KampfScene.PlayerLeben -= KampfScene.Endschaden;
                         KampfScene.PlayerVerteidigung = false;
                         KampfScene.PlayerTurn = true;
                         return;
@@ -186,11 +187,11 @@ public class PlayerObject extends BaseObject{
                 }
             }
             if (KampfScene.PlayerTurn) {
-                ItemType clicked = InventarScene.getClickedItem();
-                if(clicked != null) {
+                System.out.println(KampfScene.clicked);
+                if(KampfScene.clicked != null) {
                     System.out.println("Du bist am Angreifen");
-                    KampfScene.Zwischenschaden = angriff(clicked);
-                    removeItem(clicked);
+                    KampfScene.Zwischenschaden = angriff(KampfScene.clicked);
+                    removeItem(KampfScene.clicked);
                     InventarScene.rebuild();
                     KampfScene.PlayerTurn = false;
                     KampfScene.lehrerVerteidigung = true;

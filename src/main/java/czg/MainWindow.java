@@ -1,5 +1,7 @@
 package czg;
 
+import czg.objects.ItemType;
+import czg.objects.PlayerObject;
 import czg.scenes.SceneStack;
 import czg.scenes.intro.TitleScreenScene;
 import czg.util.Input;
@@ -9,6 +11,7 @@ import czg.util.character_creator.CharacterCreator;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 
 /**
  * Das Haupt-Fenster. Hier wird die Grafik ausgegeben.
@@ -45,6 +48,9 @@ public class MainWindow extends JFrame implements Runnable {
      * auch immer denselben {@link System#nanoTime()}-Wert benutzt
      */
     public long TIME_AT_UPDATE_START;
+
+    public static int UebrigeLehrer = 5;
+    public static boolean[] UebrigeLehrerArray = {true, true, true, true, true};
 
 
     /**
@@ -92,6 +98,7 @@ public class MainWindow extends JFrame implements Runnable {
         INSTANCE.setVisible(true);
 
         //Startszene
+        Arrays.stream(ItemType.values()).forEach(PlayerObject.INSTANCE::addItem);
         SceneStack.INSTANCE.push(new TitleScreenScene());
 
         // Fenstergröße beheben

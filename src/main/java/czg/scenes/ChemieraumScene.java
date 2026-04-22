@@ -1,10 +1,6 @@
 package czg.scenes;
 
-import czg.objects.BackdropObject;
-import czg.objects.ButtonObject;
-import czg.objects.Department;
-import czg.objects.PfeilObject;
-import czg.objects.PlayerObject;
+import czg.objects.*;
 import czg.scenes.minigame.Minigames;
 import czg.util.Images;
 
@@ -15,7 +11,14 @@ public class ChemieraumScene extends BaseScene{
         
         //Pfeilobjekt für den Wechsel in die Gangszene
         objects.add(new PfeilObject(this, ChemiegangScene::new, PfeilObject.UNTEN));
-        
+
+        objects.add(new ButtonObject(Images.get("/assets/characters/kko.png"),
+                () -> {
+                    SceneStack.INSTANCE.push(new KampfScene(Department.COMPUTER_SCIENCE));
+                    SceneStack.INSTANCE.push(new InventarScene(false));
+                    PlayerObject.INSTANCE.allowInventory = false;
+                }));
+
         //Einfügen der Spieler-Figur
         this.objects.add(PlayerObject.INSTANCE);
         PlayerObject.INSTANCE.x = 170;
