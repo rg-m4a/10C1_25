@@ -1,8 +1,6 @@
 package czg.scenes;
 
-import czg.objects.BackdropObject;
-import czg.objects.PfeilObject;
-import czg.objects.PlayerObject;
+import czg.objects.*;
 import czg.objects.music_loop_object.MusicLoopObject;
 import czg.objects.music_loop_object.SegmentChangeMarker;
 import czg.sound.BaseSound;
@@ -17,7 +15,14 @@ public class MatheraumScene extends BaseScene{
         
         //Pfeilobjekt für den Wechsel in die Gangszene
         objects.add(new PfeilObject(this, MathegangScene::new, PfeilObject.UNTEN));
-        
+
+        objects.add(new ButtonObject(Images.get("/assets/characters/gei.png"),
+                () -> {
+                    SceneStack.INSTANCE.push(new KampfScene(Department.COMPUTER_SCIENCE));
+                    SceneStack.INSTANCE.push(new InventarScene());
+                    PlayerObject.INSTANCE.allowInventory = false;
+                }));
+
         //Einfügen der Spieler-Figur
         this.objects.add(PlayerObject.INSTANCE);
         PlayerObject.INSTANCE.x = 270;

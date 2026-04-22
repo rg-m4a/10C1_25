@@ -175,10 +175,9 @@ public class PlayerObject extends BaseObject{
                     return;
                 }
                 else {
-                    ItemType clicked = InventarScene.getClickedItem();
-                    if(clicked != null) {
-                        KampfScene.Endschaden = verteidigung(KampfScene.Zwischenschaden, clicked);
-                        removeItem(clicked);
+                    if(KampfScene.clicked != null) {
+                        KampfScene.Endschaden = verteidigung(KampfScene.Zwischenschaden, KampfScene.clicked);
+                        removeItem(KampfScene.clicked);
                         KampfScene.PlayerLeben -= KampfScene.Endschaden;
                         KampfScene.PlayerVerteidigung = false;
                         KampfScene.PlayerTurn = true;
@@ -187,11 +186,11 @@ public class PlayerObject extends BaseObject{
                 }
             }
             if (KampfScene.PlayerTurn) {
-                ItemType clicked = InventarScene.getClickedItem();
-                if(clicked != null) {
+                System.out.println(KampfScene.clicked);
+                if(KampfScene.clicked != null) {
                     System.out.println("Du bist am Angreifen");
-                    KampfScene.Zwischenschaden = angriff(clicked);
-                    removeItem(clicked);
+                    KampfScene.Zwischenschaden = angriff(KampfScene.clicked);
+                    removeItem(KampfScene.clicked);
                     KampfScene.PlayerTurn = false;
                     KampfScene.lehrerVerteidigung = true;
                 }

@@ -27,9 +27,13 @@ public class KampfScene extends BaseScene{
     public static int Endschaden = 0;
     public static int LehrerLeben = 10;
     public static int PlayerLeben = 10;
+    public static ItemType clicked;
+    public static Department FACHSCHAFT;
 
-    public KampfScene(String FACHSCHAFT){
+    public KampfScene(Department FACHSCHAFT){
         super();
+        this.FACHSCHAFT = FACHSCHAFT;
+
         coverSettings.setRules(new Rules(Setting.KEEP, Setting.OFF, Setting.KEEP), "inventar");
 
         //Einfügen des Hintergrunds
@@ -39,7 +43,7 @@ public class KampfScene extends BaseScene{
 
         imKampf = true;
 
-        LehrerObject Lehrer = new LehrerObject(600, 300, FACHSCHAFT);
+        LehrerObject Lehrer = new LehrerObject(700, 200, FACHSCHAFT);
         this.objects.add(Lehrer);
         this.objects.add(PlayerObject.INSTANCE);
         PlayerObject.INSTANCE.x = 330;
@@ -63,7 +67,7 @@ public class KampfScene extends BaseScene{
     @Override
     public void update() {
         super.update();
-        ItemType clicked = InventarScene.getClickedItem();
+        clicked = InventarScene.getClickedItem();
         if(clicked != null)
             System.out.println(clicked);
 
