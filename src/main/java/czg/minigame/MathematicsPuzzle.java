@@ -286,8 +286,6 @@ public enum MathematicsPuzzle {
                 amountOfPixel++;
             }
         }
-        
-        System.out.println(amountOfCoveredPixel / amountOfPixel);
 
         // Rückgabe, ob genug Pixel verdeckt sind
         return amountOfCoveredPixel / amountOfPixel > 1-MARGIN_OF_ERROR;
