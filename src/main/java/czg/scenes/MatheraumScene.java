@@ -16,7 +16,7 @@ public class MatheraumScene extends BaseScene{
 
         LehrerObject.addButtonObject(this, Department.MATHEMATICS, 140 * PIXEL_SCALE, 70 * PIXEL_SCALE);
 
-        objects.add(new ButtonObject(Images.get("/assets/minigames/general/button_menu.png"), 175 * PIXEL_SCALE, 65 * PIXEL_SCALE,
+        objects.add(new ButtonObject(Images.get("/assets/minigames/general/button_play.png"), 175 * PIXEL_SCALE, 65 * PIXEL_SCALE,
                 () -> SceneStack.INSTANCE.push(Minigames.generateMinigame(Department.MATHEMATICS))));
 
         //Einfügen der Spieler-Figur
