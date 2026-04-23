@@ -21,7 +21,7 @@ public class ChemieraumScene extends BaseScene{
         PlayerObject.INSTANCE.x = 170;
         PlayerObject.INSTANCE.y = 330;
 
-        objects.add(new ButtonObject(Images.get("/assets/minigames/general/button_menu.png"), 155 * PIXEL_SCALE, 69 * PIXEL_SCALE,
+        objects.add(new ButtonObject(Images.get("/assets/minigames/general/button_play.png"), 155 * PIXEL_SCALE, 69 * PIXEL_SCALE,
                 () -> SceneStack.INSTANCE.push(Minigames.generateMinigame(Department.CHEMISTRY))));
         }
 }

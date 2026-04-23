@@ -21,7 +21,7 @@ public class PhysikraumScene extends BaseScene{
         PlayerObject.INSTANCE.x = 210;
         PlayerObject.INSTANCE.y = 290;
 
-        objects.add(new ButtonObject(Images.get("/assets/minigames/general/button_menu.png"), 172 * PIXEL_SCALE, 28  * PIXEL_SCALE,
+        objects.add(new ButtonObject(Images.get("/assets/minigames/general/button_play.png"), 172 * PIXEL_SCALE, 28  * PIXEL_SCALE,
                 () -> SceneStack.INSTANCE.push(Minigames.generateMinigame(Department.PHYSICS))));
     }
 }

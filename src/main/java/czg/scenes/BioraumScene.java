@@ -24,7 +24,7 @@ public class BioraumScene extends BaseScene{
         PlayerObject.INSTANCE.x = 150;
         PlayerObject.INSTANCE.y = 290;
 
-        objects.add(new ButtonObject(Images.get("/assets/minigames/general/button_menu.png"), 165 * PIXEL_SCALE, 28 * PIXEL_SCALE,
+        objects.add(new ButtonObject(Images.get("/assets/minigames/general/button_play.png"), 165 * PIXEL_SCALE, 28 * PIXEL_SCALE,
                 () -> SceneStack.INSTANCE.push(Minigames.generateMinigame(Department.BIOLOGY))));
     }
 }
